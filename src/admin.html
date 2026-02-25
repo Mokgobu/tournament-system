@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Admin-specific styles */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .admin-sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .admin-sidebar h2 {
+            padding: 20px;
+            margin: 0;
+            font-size: 1.5em;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .admin-sidebar ul {
+            list-style: none;
+            padding: 20px 0;
+        }
+        
+        .admin-sidebar li {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .admin-sidebar li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .admin-sidebar li.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid white;
+        }
+        
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 20px;
+            background: #f5f7fb;
+        }
+        
+        .admin-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stat-card i {
+            font-size: 3em;
+            opacity: 0.8;
+        }
+        
+        .stat-info h3 {
+            font-size: 1.1em;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info .number {
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .checkbox-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .checkbox-item:last-child {
+            border-bottom: none;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-edit, .btn-delete, .btn-score {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .btn-edit { background: #4CAF50; color: white; }
+        .btn-delete { background: #f44336; color: white; }
+        .btn-score { background: #FF9800; color: white; }
+        
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .status-active { background: #d4edda; color: #155724; }
+        .status-completed { background: #cce5ff; color: #004085; }
+        .status-scheduled { background: #fff3cd; color: #856404; }
+        .status-league { background: #e3f2fd; color: #0d47a1; }
+        .status-knockout { background: #f3e5f5; color: #4a148c; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <h2>🏆 Tournament Admin</h2>
+            <ul>
+                <li class="active" onclick="loadSection('dashboard')">
+                    <i class="fas fa-dashboard"></i> Dashboard
+                </li>
+                <li onclick="loadSection('teams')">
+                    <i class="fas fa-users"></i> Teams
+                </li>
+                <li onclick="loadSection('events')">
+                    <i class="fas fa-trophy"></i> Events
+                </li>
+                <li onclick="loadSection('matches')">
+                    <i class="fas fa-calendar"></i> Matches
+                </li>
+                <li onclick="loadSection('standings')">
+                    <i class="fas fa-table"></i> Standings
+                </li>
+                <li onclick="loadSection('settings')">
+                    <i class="fas fa-gear"></i> Settings
+                </li>
+                <li onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i> Back to Site
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-header">
+                <h1 id="section-title">Dashboard</h1>
+                <div>
+                    <span id="current-date"></span>
+                    <button onclick="refreshData()" class="btn-edit" style="margin-left: 10px;">
+                        <i class="fas fa-refresh"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div id="content-area" class="admin-content">
+                <!-- Content loads here -->
+                <div class="loading">Loading dashboard...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Modal -->
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('teamModal')">&times;</span>
+            <h2>Add/Edit Team</h2>
+            <form id="teamForm" onsubmit="saveTeam(event)">
+                <input type="hidden" id="teamId">
+                <div class="form-group">
+                    <label for="teamName">Team Name:</label>
+                    <input type="text" id="teamName" class="form-control" required>
+                </div>
+                <button type="submit" class="btn-primary">Save Team</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('eventModal')">&times;</span>
+            <h2>Create Event</h2>
+            <form id="eventForm" onsubmit="saveEvent(event)">
+                <div class="form-group">
+                    <label for="eventName">Event Name:</label>
+                    <input type="text" id="eventName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventType">Tournament Type:</label>
+                    <select id="eventType" class="form-control" required>
+                        <option value="league">League (Round Robin)</option>
+                        <option value="knockout">Knockout (Bracket)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Select Teams (minimum 2):</label>
+                    <div id="teamCheckboxes" class="checkbox-group">
+                        <!-- Teams loaded here -->
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Create Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div id="scoreModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('scoreModal')">&times;</span>
+            <h2>Update Match Score</h2>
+            <form id="scoreForm" onsubmit="updateMatchScore(event)">
+                <input type="hidden" id="matchId">
+                <div id="matchTeamsDisplay" style="text-align: center; margin: 20px 0; font-size: 1.2em;"></div>
+                <div style="display: flex; gap: 20px; justify-content: center;">
+                    <div class="form-group">
+                        <label id="team1Label">Team 1:</label>
+                        <input type="number" id="team1Score" min="0" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label id="team2Label">Team 2:</label>
+                        <input type="number" id="team2Score" min="0" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Update Score</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // API base URL
+        const API_BASE = '/.netlify/functions';
+        let currentSection = 'dashboard';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDate();
+            loadSection('dashboard');
+        });
+
+        function updateDate() {
+            document.getElementById('current-date').textContent = 
+                new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+        }
+
+        function refreshData() {
+            loadSection(currentSection);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Section loading
+        async function loadSection(section) {
+            currentSection = section;
+            
+            // Update active menu
+            document.querySelectorAll('.admin-sidebar li').forEach(li => li.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update title
+            document.getElementById('section-title').textContent = 
+                section.charAt(0).toUpperCase() + section.slice(1);
+
+            // Load section content
+            switch(section) {
+                case 'dashboard':
+                    await loadDashboard();
+                    break;
+                case 'teams':
+                    await loadTeams();
+                    break;
+                case 'events':
+                    await loadEvents();
+                    break;
+                case 'matches':
+                    await loadMatches();
+                    break;
+                case 'standings':
+                    await loadStandings();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
+            }
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            const content = document.getElementById('content-area');
+            
+            try {
+                const [teamsRes, eventsRes, matchesRes] = await Promise.all([
+                    fetch(`${API_BASE}/teams`),
+                    fetch(`${API_BASE}/events`),
+                    fetch(`${API_BASE}/matches`)
+                ]);
+                
+                const teams = await teamsRes.json();
+                const events = await eventsRes.json();
+                const matches = await matchesRes.json();
+                
+                const activeEvents = events.filter(e => e.status === 'active');
+                const completedMatches = matches.filter(m => m.status === 'completed');
+                
+                content.innerHTML = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <div class="stat-info">
+                                <h3>Total Teams</h3>
+                                <div class="number">${teams.length}</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-trophy"></i>
+                            <div class="stat-info">
+                                <h3>Active Events</h3>
+                                <div class="number">${activeEvents.length}</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar"></i>
+                            <div class="stat-info">
+                                <h3>Total Matches</h3>
+                                <div class="number">${matches.length}</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="stat-info">
+                                <h3>Completed</h3>
+                                <div class="number">${completedMatches.length}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>Recent Events</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${events.slice(0, 5).map(event => `
+                                <tr>
+                                    <td>${event.name}</td>
+                                    <td><span class="status-badge status-${event.type}">${event.type}</span></td>
+                                    <td><span class="status-badge status-${event.status}">${event.status}</span></td>
+                                    <td>${new Date(event.created_at).toLocaleDateString()}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                content.innerHTML = `<div class="error">Error loading dashboard: ${error.message}</div>`;
+            }
+        }
+
+        // Teams Management
+        async function loadTeams() {
+            const content = document.getElementById('content-area');
+            
+            try {
+                const response = await fetch(`${API_BASE}/teams`);
+                const teams = await response.json();
+                
+                content.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <h2>Manage Teams</h2>
+                        <button onclick="openTeamModal()" class="btn-primary">
+                            <i class="fas fa-plus"></i> Add Team
+                        </button>
+                    </div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Team Name</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${teams.map(team => `
+                                <tr>
+                                    <td>#${team.id}</td>
+                                    <td><strong>${team.name}</strong></td>
+                                    <td>${new Date(team.created_at).toLocaleDateString()}</td>
+                                    <td class="actions">
+                                        <button onclick="editTeam(${team.id}, '${team.name}')" class="btn-edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="deleteTeam(${team.id})" class="btn-delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                content.innerHTML = `<div class="error">Error loading teams: ${error.message}</div>`;
+            }
+        }
+
+        function openTeamModal() {
+            document.getElementById('teamId').value = '';
+            document.getElementById('teamName').value = '';
+            document.getElementById('teamModal').style.display = 'block';
+        }
+
+        function editTeam(id, name) {
+            document.getElementById('teamId').value = id;
+            document.getElementById('teamName').value = name;
+            document.getElementById('teamModal').style.display = 'block';
+        }
+
+        async function saveTeam(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('teamId').value;
+            const name = document.getElementById('teamName').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/teams`, {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, id: id || undefined })
+                });
+                
+                if (response.ok) {
+                    closeModal('teamModal');
+                    loadTeams();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Error saving team');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function deleteTeam(id) {
+            if (!confirm('Are you sure?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/teams/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadTeams();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Error deleting team');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Events Management
+        async function loadEvents() {
+            const content = document.getElementById('content-area');
+            
+            try {
+                const response = await fetch(`${API_BASE}/events`);
+                const events = await response.json();
+                
+                content.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <h2>Tournament Events</h2>
+                        <button onclick="openEventModal()" class="btn-primary">
+                            <i class="fas fa-plus"></i> Create Event
+                        </button>
+                    </div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${events.map(event => `
+                                <tr>
+                                    <td><strong>${event.name}</strong></td>
+                                    <td><span class="status-badge status-${event.type}">${event.type}</span></td>
+                                    <td><span class="status-badge status-${event.status}">${event.status}</span></td>
+                                    <td>${new Date(event.created_at).toLocaleDateString()}</td>
+                                    <td class="actions">
+                                        <button onclick="viewEvent(${event.id})" class="btn-edit">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button onclick="deleteEvent(${event.id})" class="btn-delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                content.innerHTML = `<div class="error">Error loading events: ${error.message}</div>`;
+            }
+        }
+
+        async function openEventModal() {
+            try {
+                const response = await fetch(`${API_BASE}/teams`);
+                const teams = await response.json();
+                
+                const checkboxes = document.getElementById('teamCheckboxes');
+                checkboxes.innerHTML = teams.map(team => `
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="${team.id}" id="team-${team.id}">
+                        <label for="team-${team.id}">${team.name}</label>
+                    </div>
+                `).join('');
+                
+                document.getElementById('eventName').value = '';
+                document.getElementById('eventType').value = 'league';
+                document.getElementById('eventModal').style.display = 'block';
+            } catch (error) {
+                alert('Error loading teams: ' + error.message);
+            }
+        }
+
+        async function saveEvent(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('eventName').value;
+            const type = document.getElementById('eventType').value;
+            const selectedTeams = Array.from(document.querySelectorAll('#teamCheckboxes input:checked'))
+                .map(cb => parseInt(cb.value));
+            
+            if (selectedTeams.length < 2) {
+                alert('Select at least 2 teams');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/events`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, type, teams: selectedTeams })
+                });
+                
+                if (response.ok) {
+                    closeModal('eventModal');
+                    loadEvents();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Error creating event');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Placeholder functions for other sections
+        async function loadMatches() {
+            document.getElementById('content-area').innerHTML = '<div class="loading">Loading matches...</div>';
+            // Implement matches view
+        }
+
+        async function loadStandings() {
+            document.getElementById('content-area').innerHTML = '<div class="loading">Loading standings...</div>';
+            // Implement standings view
+        }
+
+        function loadSettings() {
+            document.getElementById('content-area').innerHTML = '<div class="loading">Settings coming soon...</div>';
+        }
+
+        function viewEvent(id) {
+            alert('View event ' + id + ' - to be implemented');
+        }
+
+        function deleteEvent(id) {
+            if (confirm('Delete this event?')) {
+                alert('Delete event ' + id + ' - to be implemented');
+            }
+        }
+
+        function updateMatchScore(event) {
+            event.preventDefault();
+            alert('Update score - to be implemented');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
