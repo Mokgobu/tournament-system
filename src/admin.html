@@ -1419,8 +1419,8 @@ async function loadEvents() {
     try {
         const response = await fetch(`${API_BASE}/events`);
         if (response.ok) {
-            const fetchedEvents = await response.json();
-            events = fetchedEvents || [];
+            events = await response.json();
+            console.log('Events loaded:', events);
         } else {
             events = [];
         }
