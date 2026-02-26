@@ -1,9 +1,6 @@
 import { neon } from '@netlify/neon';
 
 export default async (req) => {
-  const databaseUrl = process.env.NETLIFY_DATABASE_URL;
-  const sql = neon(databaseUrl);
-  
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -16,24 +13,38 @@ export default async (req) => {
   }
 
   try {
+    const databaseUrl = process.env.NETLIFY_DATABASE_URL;
+    if (!databaseUrl) {
+      console.error('NETLIFY_DATABASE_URL not set');
+      return new Response(
+        JSON.stringify({ error: 'Database configuration error' }),
+        { status: 500, headers }
+      );
+    }
+
+    const sql = neon(databaseUrl);
     const url = new URL(req.url);
     const pathParts = url.pathname.split('/');
     const id = pathParts[pathParts.length - 1];
 
+    // Test connection
+    await sql`SELECT 1`;
+
     // GET all events
     if (req.method === 'GET' && !id) {
+      console.log('Fetching all events');
       const events = await sql`SELECT * FROM events ORDER BY created_at DESC`;
       return new Response(JSON.stringify(events), { headers });
     }
 
     // GET single event
-    if (req.method === 'GET' && id) {
+    if (req.method === 'GET' && id && id !== 'events') {
+      console.log('Fetching event:', id);
       const [event] = await sql`SELECT * FROM events WHERE id = ${id}`;
       if (!event) {
         return new Response('Event not found', { status: 404, headers });
       }
       
-      // Get matches for this event
       const matches = await sql`
         SELECT m.*, 
                t1.name as team1_name, t1.abbreviation as team1_abbr,
@@ -50,7 +61,15 @@ export default async (req) => {
     
     // POST new event
     if (req.method === 'POST') {
+      console.log('Creating new event');
       const { name, type, teams } = await req.json();
+      
+      if (!name || !type || !teams || teams.length < 2) {
+        return new Response(
+          JSON.stringify({ error: 'Name, type, and at least 2 teams required' }),
+          { status: 400, headers }
+        );
+      }
       
       const [newEvent] = await sql`
         INSERT INTO events (name, type, status)
@@ -73,6 +92,7 @@ export default async (req) => {
         await generateKnockoutMatches(sql, newEvent.id, teams);
       }
       
+      console.log('Event created:', newEvent);
       return new Response(JSON.stringify(newEvent), { 
         status: 201, 
         headers 
@@ -81,6 +101,7 @@ export default async (req) => {
 
     // PUT (edit) event
     if (req.method === 'PUT' && id) {
+      console.log('Updating event:', id);
       const { name, type, status } = await req.json();
       
       const [updatedEvent] = await sql`
@@ -101,19 +122,13 @@ export default async (req) => {
 
     // DELETE event
     if (req.method === 'DELETE' && id) {
-      // Check if event has matches
-      const [matchCheck] = await sql`
-        SELECT COUNT(*) as count FROM matches WHERE event_id = ${id}
-      `;
+      console.log('Deleting event:', id);
       
-      if (matchCheck.count > 0) {
-        // Delete matches first
-        await sql`DELETE FROM matches WHERE event_id = ${id}`;
-      }
-
+      // Delete matches first
+      await sql`DELETE FROM matches WHERE event_id = ${id}`;
       // Delete standings
       await sql`DELETE FROM standings WHERE event_id = ${id}`;
-
+      // Delete event
       const [deletedEvent] = await sql`
         DELETE FROM events WHERE id = ${id} RETURNING *
       `;
@@ -128,9 +143,12 @@ export default async (req) => {
     return new Response('Not found', { status: 404, headers });
     
   } catch (error) {
-    console.error('Database error:', error);
+    console.error('Events function error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack 
+      }),
       { status: 500, headers }
     );
   }

@@ -1,17 +1,34 @@
 import { neon } from '@netlify/neon';
 
 export default async (req) => {
-  const databaseUrl = process.env.NETLIFY_DATABASE_URL;
-  const sql = neon(databaseUrl);
-  
   const headers = {
     'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Content-Type': 'application/json'
   };
 
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers });
+  }
+
   try {
+    const databaseUrl = process.env.NETLIFY_DATABASE_URL;
+    if (!databaseUrl) {
+      return new Response(
+        JSON.stringify({ error: 'Database configuration error' }),
+        { status: 500, headers }
+      );
+    }
+
+    const sql = neon(databaseUrl);
+    const url = new URL(req.url);
+    const pathParts = url.pathname.split('/');
+    const id = pathParts[pathParts.length - 1];
+
     // GET all matches
-    if (req.method === 'GET') {
+    if (req.method === 'GET' && !id) {
+      console.log('Fetching all matches');
       const matches = await sql`
         SELECT m.*, 
                t1.name as team1_name, t1.abbreviation as team1_abbr, t1.color as team1_color,
@@ -25,14 +42,32 @@ export default async (req) => {
       `;
       return new Response(JSON.stringify(matches), { headers });
     }
+
+    // GET single match
+    if (req.method === 'GET' && id) {
+      const [match] = await sql`
+        SELECT m.*, 
+               t1.name as team1_name, t1.abbreviation as team1_abbr,
+               t2.name as team2_name, t2.abbreviation as team2_abbr,
+               e.name as event_name
+        FROM matches m
+        LEFT JOIN teams t1 ON m.team1_id = t1.id
+        LEFT JOIN teams t2 ON m.team2_id = t2.id
+        LEFT JOIN events e ON m.event_id = e.id
+        WHERE m.id = ${id}
+      `;
+      
+      if (!match) {
+        return new Response('Match not found', { status: 404, headers });
+      }
+      return new Response(JSON.stringify(match), { headers });
+    }
     
     // UPDATE match score
-    if (req.method === 'PUT') {
-      const url = new URL(req.url);
-      const id = url.pathname.split('/').pop();
+    if (req.method === 'PUT' && id) {
+      console.log('Updating match:', id);
       const { team1_score, team2_score, status } = await req.json();
       
-      // Update the match
       const [updatedMatch] = await sql`
         UPDATE matches 
         SET team1_score = ${team1_score}, 
@@ -42,18 +77,34 @@ export default async (req) => {
         RETURNING *
       `;
       
-      // If match is completed, update standings
-      if (status === 'completed' || (!status && team1_score !== null)) {
-        await updateStandings(sql, updatedMatch);
+      if (!updatedMatch) {
+        return new Response('Match not found', { status: 404, headers });
       }
       
+      // Update standings
+      await updateStandings(sql, updatedMatch);
+      
       return new Response(JSON.stringify(updatedMatch), { headers });
+    }
+
+    // DELETE match
+    if (req.method === 'DELETE' && id) {
+      console.log('Deleting match:', id);
+      const [deletedMatch] = await sql`
+        DELETE FROM matches WHERE id = ${id} RETURNING *
+      `;
+      
+      if (!deletedMatch) {
+        return new Response('Match not found', { status: 404, headers });
+      }
+      
+      return new Response(JSON.stringify(deletedMatch), { headers });
     }
     
     return new Response('Not found', { status: 404, headers });
     
   } catch (error) {
-    console.error('Database error:', error);
+    console.error('Matches function error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers }
@@ -72,30 +123,30 @@ async function updateStandings(sql, match) {
 }
 
 async function updateTeamStanding(sql, eventId, teamId, goalsFor, goalsAgainst) {
-  // Get current standing
-  const [standing] = await sql`
+  const isWin = goalsFor > goalsAgainst;
+  const isDraw = goalsFor === goalsAgainst;
+  const isLoss = goalsFor < goalsAgainst;
+  
+  // Check if standing exists
+  const [existing] = await sql`
     SELECT * FROM standings 
     WHERE event_id = ${eventId} AND team_id = ${teamId}
   `;
   
-  if (!standing) {
-    // Create new standing if doesn't exist
+  if (!existing) {
+    // Create new standing
     await sql`
       INSERT INTO standings (event_id, team_id, played, won, drawn, lost, goals_for, goals_against, points)
       VALUES (${eventId}, ${teamId}, 1, 
-        ${goalsFor > goalsAgainst ? 1 : 0},
-        ${goalsFor === goalsAgainst ? 1 : 0},
-        ${goalsFor < goalsAgainst ? 1 : 0},
+        ${isWin ? 1 : 0},
+        ${isDraw ? 1 : 0},
+        ${isLoss ? 1 : 0},
         ${goalsFor}, ${goalsAgainst},
-        ${goalsFor > goalsAgainst ? 3 : (goalsFor === goalsAgainst ? 1 : 0)}
+        ${isWin ? 3 : (isDraw ? 1 : 0)}
       )
     `;
   } else {
     // Update existing standing
-    const isWin = goalsFor > goalsAgainst;
-    const isDraw = goalsFor === goalsAgainst;
-    const isLoss = goalsFor < goalsAgainst;
-    
     await sql`
       UPDATE standings 
       SET played = played + 1,
