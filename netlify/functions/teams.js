@@ -10,11 +10,13 @@ export default async (req) => {
   };
 
   try {
+    // GET all teams
     if (req.method === 'GET') {
       const teams = await sql`SELECT * FROM teams ORDER BY name`;
       return new Response(JSON.stringify(teams), { headers });
     }
     
+    // POST new team
     if (req.method === 'POST') {
       const { name, abbreviation, color } = await req.json();
       
@@ -33,6 +35,7 @@ export default async (req) => {
     return new Response('Not found', { status: 404, headers });
     
   } catch (error) {
+    console.error('Database error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers }

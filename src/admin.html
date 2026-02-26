@@ -1514,31 +1514,25 @@ async function loadSponsors() {
     const teamId = document.getElementById('teamId').value;
     
     try {
-        if (!teamId) {
-            // Add new team locally with a new ID
-            const newId = teams.length > 0 ? Math.max(...teams.map(t => t.id)) + 1 : 1;
-            const newTeam = { 
-                id: newId, 
-                ...teamData 
-            };
-            teams.push(newTeam);
-            console.log('Team added:', newTeam);
+        const response = await fetch(`${API_BASE}/teams${teamId ? `/${teamId}` : ''}`, {
+            method: teamId ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(teamData)
+        });
+        
+        if (response.ok) {
+            const savedTeam = await response.json();
+            console.log('Team saved to database:', savedTeam);
+            
+            closeModal('teamModal');
+            await loadTeams(); // Reload from database
+            await loadTeamsSection(); // Refresh UI
+            showAlert('Team saved to database!', 'success');
         } else {
-            // Update existing team
-            const index = teams.findIndex(t => t.id == teamId);
-            if (index !== -1) {
-                teams[index] = { ...teams[index], ...teamData };
-                console.log('Team updated:', teams[index]);
-            }
+            const error = await response.json();
+            console.error('Error response:', error);
+            showAlert('Error: ' + (error.error || 'Unknown error'), 'error');
         }
-        
-        closeModal('teamModal');
-        
-        // Refresh the teams section to show updated list
-        await loadTeamsSection();
-        
-        showAlert('Team saved successfully!', 'success');
-        
     } catch (error) {
         console.error('Error saving team:', error);
         showAlert('Error: ' + error.message, 'error');
