@@ -1,7 +1,8 @@
-// Simple events.js with demo data
-let events = [
-  { id: 1, name: 'Premier League 2024', type: 'league', status: 'active', teams: [1,2,3,4,5,6], created_at: new Date().toISOString() },
-  { id: 2, name: 'Champions League 2024', type: 'knockout', status: 'active', teams: [1,2,3,4], created_at: new Date().toISOString() }
+// Simple scorers.js with demo data
+let scorers = [
+  { id: 1, player: 'Erling Haaland', teamId: 1, goals: 18, assists: 5, matches: 22 },
+  { id: 2, player: 'Mohamed Salah', teamId: 2, goals: 15, assists: 8, matches: 21 },
+  { id: 3, player: 'Bukayo Saka', teamId: 3, goals: 12, assists: 10, matches: 22 }
 ];
 
 export default async (req) => {
@@ -18,16 +19,14 @@ export default async (req) => {
 
   try {
     if (req.method === 'GET') {
-      return new Response(JSON.stringify(events), { headers });
+      return new Response(JSON.stringify(scorers), { headers });
     }
     
     if (req.method === 'POST') {
-      const newEvent = await req.json();
-      newEvent.id = events.length + 1;
-      newEvent.created_at = new Date().toISOString();
-      newEvent.status = 'active';
-      events.push(newEvent);
-      return new Response(JSON.stringify(newEvent), { status: 201, headers });
+      const newScorer = await req.json();
+      newScorer.id = scorers.length + 1;
+      scorers.push(newScorer);
+      return new Response(JSON.stringify(newScorer), { status: 201, headers });
     }
     
     return new Response('Not found', { status: 404, headers });
@@ -41,5 +40,5 @@ export default async (req) => {
 };
 
 export const config = {
-  path: "/api/events"
+  path: "/api/scorers"
 };

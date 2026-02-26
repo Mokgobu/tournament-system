@@ -3,76 +3,1383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tournament Management System</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>TournamentPro - Public Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Your existing CSS remains exactly the same */
+        :root {
+            --primary-dark: #0a0a0a;
+            --secondary-dark: #1a1a1a;
+            --tournament-green: #00c853;
+            --tournament-red: #ff3d00;
+            --tournament-blue: #2962ff;
+            --tournament-purple: #7b1fa2;
+            --tournament-gold: #ffd700;
+            --neutral-gray: #424242;
+            --light-gray: #f5f5f5;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: rgba(30, 30, 30, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --tournament-gradient: linear-gradient(135deg, #00c853, #2962ff, #7b1fa2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 200, 83, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(41, 98, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 50% 80%, rgba(123, 31, 162, 0.05) 0%, transparent 20%);
+            background-color: var(--primary-dark);
+            z-index: -1;
+        }
+        
+        header {
+            background-color: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--tournament-green);
+            background: var(--tournament-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--tournament-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: -5px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--tournament-green);
+            background-color: rgba(0, 200, 83, 0.1);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--tournament-green);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link.active::after, .nav-link:hover::after {
+            width: 80%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--tournament-green);
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+        
+        .stat-card.blue {
+            border-left-color: var(--tournament-blue);
+        }
+        
+        .stat-card.purple {
+            border-left-color: var(--tournament-purple);
+        }
+        
+        .stat-card.red {
+            border-left-color: var(--tournament-red);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--tournament-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            display: none;
+            padding: 2rem 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: var(--tournament-gradient);
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.8));
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+        }
+        
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: var(--light-gray);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--tournament-gradient);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 200, 83, 0.3);
+        }
+        
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--tournament-gradient);
+        }
+        
+        .card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--tournament-green);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--tournament-blue);
+        }
+        
+        .match-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .match-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.2rem;
+            border-left: 4px solid var(--tournament-green);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .match-card.upcoming {
+            border-left-color: var(--tournament-blue);
+        }
+        
+        .match-card.live {
+            border-left-color: var(--tournament-red);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 61, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 61, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 61, 0, 0); }
+        }
+        
+        .match-card.finished {
+            border-left-color: var(--neutral-gray);
+        }
+        
+        .teams {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .team {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+        
+        .team:last-child {
+            justify-content: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .team-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid var(--tournament-green);
+            font-size: 0.8rem;
+        }
+        
+        .vs {
+            font-weight: bold;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+        }
+        
+        .match-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 1rem;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .match-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 150px;
+        }
+        
+        .match-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        
+        .status-upcoming {
+            background-color: rgba(41, 98, 255, 0.2);
+            color: var(--tournament-blue);
+        }
+        
+        .status-live {
+            background-color: rgba(255, 61, 0, 0.2);
+            color: var(--tournament-red);
+        }
+        
+        .status-finished {
+            background-color: rgba(66, 66, 66, 0.2);
+            color: var(--text-secondary);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: var(--glass-shadow);
+            margin-top: 1.5rem;
+            background-color: var(--card-bg);
+            backdrop-filter: blur(10px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--tournament-gradient);
+        }
+        
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: white;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--neutral-gray);
+        }
+        
+        .team-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .position {
+            display: inline-block;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 26px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+            background: var(--tournament-green);
+            color: white;
+        }
+        
+        .scorer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .scorer-card {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            gap: 1rem;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .scorer-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .scorer-rank {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--tournament-green);
+            min-width: 40px;
+        }
+        
+        .ad-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .ad-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        footer {
+            background-color: var(--secondary-dark);
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--neutral-gray);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--tournament-green);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .match-card {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .teams {
+                width: 100%;
+            }
+            
+            .match-info {
+                width: 100%;
+                align-items: flex-start;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(10, 10, 10, 0.98);
+                flex-direction: column;
+                padding: 1rem 0;
+                z-index: 1000;
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🏆 Tournament Management System</h1>
-        
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('teams')">Teams</button>
-            <button class="tab-btn" onclick="showTab('events')">Events</button>
-            <button class="tab-btn" onclick="showTab('matches')">Matches</button>
-        </div>
-        
-        <!-- Teams Tab -->
-        <div id="teams-tab" class="tab-content active">
-            <div class="card">
-                <h2>Manage Teams</h2>
-                <div class="form-group">
-                    <input type="text" id="team-name" placeholder="Enter team name">
-                    <button onclick="addTeam()">Add Team</button>
-                </div>
-                <div id="teams-list" class="list">
-                    <!-- Teams will be loaded here -->
-                </div>
-            </div>
-        </div>
-        
-        <!-- Events Tab -->
-        <div id="events-tab" class="tab-content">
-            <div class="card">
-                <h2>Create New Event</h2>
-                <div class="form-group">
-                    <input type="text" id="event-name" placeholder="Event name">
-                    <select id="event-type">
-                        <option value="league">League</option>
-                        <option value="knockout">Knockout</option>
-                    </select>
-                    <div id="teams-selection">
-                        <h3>Select Teams:</h3>
-                        <div id="teams-checkboxes"></div>
-                    </div>
-                    <button onclick="createEvent()">Create Event</button>
+    <header>
+        <div class="container header-content">
+            <div class="logo" id="logo" data-section="dashboard">
+                <div class="logo-icon">🏆</div>
+                <div>
+                    <div class="logo-text">TournamentPro</div>
+                    <div class="logo-subtitle">Professional Tournament Management</div>
                 </div>
             </div>
             
-            <div class="card">
-                <h2>Active Events</h2>
-                <div id="events-list" class="list"></div>
-            </div>
-        </div>
-        
-        <!-- Matches Tab -->
-        <div id="matches-tab" class="tab-content">
-            <div class="card">
-                <h2>Select Event</h2>
-                <select id="match-event-select" onchange="loadEventMatches()">
-                    <option value="">Choose an event...</option>
-                </select>
-            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
             
-            <div id="event-details" style="display: none;">
-                <div class="card">
-                    <h2 id="event-name-display"></h2>
-                    <div id="standings"></div>
-                    <div id="matches-list"></div>
-                </div>
-            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a class="nav-link active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a class="nav-link" data-section="fixtures"><i class="fas fa-calendar-alt"></i> Fixtures</a></li>
+                <li><a class="nav-link" data-section="results"><i class="fas fa-futbol"></i> Results</a></li>
+                <li><a class="nav-link" data-section="standings"><i class="fas fa-table"></i> Standings</a></li>
+                <li><a class="nav-link" data-section="top-scorers"><i class="fas fa-star"></i> Top Scorers</a></li>
+                <li><a class="nav-link" data-section="sponsors"><i class="fas fa-handshake"></i> Sponsors</a></li>
+            </ul>
         </div>
-    </div>
+    </header>
     
-    <script src="app.js"></script>
+    <main class="container">
+        <section id="dashboard" class="section active">
+            <div class="hero">
+                <h1>TournamentPro Management System</h1>
+                <p>Professional platform for organizing, managing, and tracking football tournaments with real-time updates.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button class="btn" data-section="fixtures">View Fixtures</button>
+                    <button class="btn" data-section="standings" style="background: var(--tournament-blue);">View Standings</button>
+                </div>
+            </div>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card" data-section="fixtures">
+                    <div class="stat-value" id="activeTournaments">0</div>
+                    <div class="stat-label">Active Tournaments</div>
+                </div>
+                <div class="stat-card blue" data-section="fixtures">
+                    <div class="stat-value" id="totalTeams">0</div>
+                    <div class="stat-label">Total Teams</div>
+                </div>
+                <div class="stat-card purple" data-section="results">
+                    <div class="stat-value" id="totalMatches">0</div>
+                    <div class="stat-label">Total Matches</div>
+                </div>
+                <div class="stat-card red" data-section="results">
+                    <div class="stat-value" id="liveMatches">0</div>
+                    <div class="stat-label">Live Matches</div>
+                </div>
+            </div>
+            
+            <h2 class="section-title"><i class="fas fa-cogs"></i> System Features</h2>
+            <div class="feature-cards">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <h3 class="card-title">Tournament Scheduling</h3>
+                    <p>Create and manage tournament schedules with automatic fixture generation.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="card-title">Live Standings</h3>
+                    <p>Real-time standings updated automatically as match results are entered.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h3 class="card-title">Advanced Statistics</h3>
+                    <p>Comprehensive player and team statistics with performance analysis.</p>
+                </div>
+            </div>
+            
+            <div class="ad-section">
+                <div class="ad-banner" style="background: linear-gradient(135deg, var(--tournament-green), var(--tournament-blue)); padding: 2rem; border-radius: 12px; margin-top: 2rem;">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Official Sponsor</h3>
+                    <p style="color: rgba(255,255,255,0.9);">Partnering with industry leaders to deliver world-class tournament experiences</p>
+                    <p style="color: white; font-weight: 600; margin-top: 1rem;">Contact: tshepodesign2025@gmail.com</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="fixtures" class="section">
+            <h2 class="section-title"><i class="fas fa-calendar-alt"></i> Match Fixtures</h2>
+            <div class="match-list" id="fixturesList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="results" class="section">
+            <h2 class="section-title"><i class="fas fa-futbol"></i> Match Results</h2>
+            <div class="match-list" id="resultsList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="standings" class="section">
+            <h2 class="section-title"><i class="fas fa-table"></i> Tournament Standings</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Team</th>
+                            <th>P</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GF</th>
+                            <th>GA</th>
+                            <th>GD</th>
+                            <th>Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standingsBody">
+                        <tr>
+                            <td colspan="10" class="loading">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <section id="top-scorers" class="section">
+            <h2 class="section-title"><i class="fas fa-star"></i> Top Scorers</h2>
+            <div class="scorer-list" id="scorersList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="sponsors" class="section">
+            <h2 class="section-title"><i class="fas fa-handshake"></i> Official Sponsors</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">We proudly partner with industry leaders.</p>
+            <div class="ad-cards" id="sponsorsList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--tournament-green); margin-bottom: 0.5rem;">TournamentPro</div>
+                    <p>Professional tournament organization since 2023.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 style="margin-bottom: 1rem; color: var(--tournament-green);">Contact</h3>
+                    <p>info@tournamentpro.com<br>+1 (555) 123-4567</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 style="margin-bottom: 1rem; color: var(--tournament-green);">Sponsors</h3>
+                    <div class="sponsor-logos" id="footerSponsors" style="display: flex; gap: 1rem;">
+                        <div class="loading">
+                            <div class="spinner" style="width: 30px; height: 30px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2024 TournamentPro Management System | <span id="currentYear"></span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8888/api'
+            : '/api';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing application...');
+            initApplication();
+        });
+
+        let tournamentData = {
+            teams: [],
+            events: [],
+            matches: [],
+            scorers: [],
+            sponsors: []
+        };
+
+        function initApplication() {
+            console.log('Initializing application...');
+            
+            const yearElement = document.getElementById('currentYear');
+            if (yearElement) {
+                yearElement.textContent = new Date().getFullYear();
+            }
+            
+            setupNavigation();
+            loadAllData();
+        }
+
+        function setupNavigation() {
+            console.log('Setting up navigation...');
+            
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navMenu = document.getElementById('navMenu');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navMenu.classList.toggle('active');
+                });
+            }
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            const statCards = document.querySelectorAll('.stat-card');
+            const actionButtons = document.querySelectorAll('.btn[data-section]');
+            const logo = document.getElementById('logo');
+            
+            function switchSection(targetSection) {
+                console.log('Switching to section:', targetSection);
+                
+                if (!targetSection) return;
+                
+                navLinks.forEach(link => {
+                    if (link.getAttribute('data-section') === targetSection) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                const targetElement = document.getElementById(targetSection);
+                if (targetElement) {
+                    targetElement.classList.add('active');
+                }
+                
+                if (navMenu) {
+                    navMenu.classList.remove('active');
+                }
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetSection = this.getAttribute('data-section');
+                    if (targetSection) switchSection(targetSection);
+                });
+            });
+            
+            statCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetSection = this.getAttribute('data-section');
+                    if (targetSection) switchSection(targetSection);
+                });
+            });
+            
+            actionButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetSection = this.getAttribute('data-section');
+                    if (targetSection) switchSection(targetSection);
+                });
+            });
+            
+            if (logo) {
+                logo.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    switchSection('dashboard');
+                });
+            }
+        }
+
+        async function loadAllData() {
+            try {
+                console.log('Loading real data from API...');
+                
+                await Promise.all([
+                    loadTeams(),
+                    loadEvents(),
+                    loadMatches(),
+                    loadScorers(),
+                    loadSponsors()
+                ]);
+                
+                updateDashboardStats();
+                loadFixtures();
+                loadResults();
+                loadStandings();
+                
+                console.log('Real data loaded successfully');
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showAlert('Error loading data', 'error');
+            }
+        }
+
+        async function loadTeams() {
+            try {
+                const response = await fetch(`${API_BASE}/teams`);
+                if (response.ok) {
+                    tournamentData.teams = await response.json();
+                    console.log('Teams loaded:', tournamentData.teams.length);
+                } else {
+                    tournamentData.teams = [];
+                }
+            } catch (error) {
+                console.error('Error loading teams:', error);
+                tournamentData.teams = [];
+            }
+        }
+
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${API_BASE}/events`);
+                if (response.ok) {
+                    tournamentData.events = await response.json();
+                } else {
+                    tournamentData.events = [];
+                }
+            } catch (error) {
+                console.error('Error loading events:', error);
+                tournamentData.events = [];
+            }
+        }
+
+        async function loadMatches() {
+            try {
+                const response = await fetch(`${API_BASE}/matches`);
+                if (response.ok) {
+                    tournamentData.matches = await response.json();
+                } else {
+                    tournamentData.matches = [];
+                }
+            } catch (error) {
+                console.error('Error loading matches:', error);
+                tournamentData.matches = [];
+            }
+        }
+
+        async function loadScorers() {
+            try {
+                const response = await fetch(`${API_BASE}/scorers`);
+                if (response.ok) {
+                    tournamentData.scorers = await response.json();
+                } else {
+                    tournamentData.scorers = [];
+                }
+            } catch (error) {
+                console.error('Error loading scorers:', error);
+                tournamentData.scorers = [];
+            }
+        }
+
+        async function loadSponsors() {
+            try {
+                const response = await fetch(`${API_BASE}/sponsors`);
+                if (response.ok) {
+                    tournamentData.sponsors = await response.json();
+                } else {
+                    tournamentData.sponsors = [];
+                }
+            } catch (error) {
+                console.error('Error loading sponsors:', error);
+                tournamentData.sponsors = [];
+            }
+        }
+
+        function updateDashboardStats() {
+            const activeTournaments = tournamentData.events?.filter(e => e.status === 'active').length || 0;
+            const totalTeams = tournamentData.teams?.length || 0;
+            const totalMatches = tournamentData.matches?.length || 0;
+            const liveMatches = tournamentData.matches?.filter(m => m.status === 'live').length || 0;
+            
+            document.getElementById('activeTournaments').textContent = activeTournaments;
+            document.getElementById('totalTeams').textContent = totalTeams;
+            document.getElementById('totalMatches').textContent = totalMatches;
+            document.getElementById('liveMatches').textContent = liveMatches;
+        }
+
+        function loadFixtures() {
+            const fixturesList = document.getElementById('fixturesList');
+            if (!fixturesList) return;
+            
+            const fixtures = tournamentData.matches?.filter(m => m.status === 'scheduled') || [];
+            
+            if (fixtures.length === 0) {
+                fixturesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <h3>No Fixtures Scheduled</h3>
+                        <p>Check back later for upcoming matches</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            fixturesList.innerHTML = '';
+            
+            fixtures.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+            
+            fixtures.forEach(fixture => {
+                const homeTeam = tournamentData.teams?.find(t => t.id == fixture.team1_id);
+                const awayTeam = tournamentData.teams?.find(t => t.id == fixture.team2_id);
+                
+                if (!homeTeam || !awayTeam) return;
+                
+                const matchCard = document.createElement('div');
+                matchCard.className = 'match-card upcoming';
+                
+                const matchDate = new Date(fixture.match_date);
+                const dateStr = matchDate.toLocaleDateString();
+                const timeStr = matchDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                matchCard.innerHTML = `
+                    <div class="teams">
+                        <div class="team">
+                            <div class="team-logo" style="border-color: ${homeTeam.color || '#00c853'};">${homeTeam.abbreviation || homeTeam.name.substring(0, 2)}</div>
+                            <span style="font-weight: 600;">${homeTeam.name}</span>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <div class="team-logo" style="border-color: ${awayTeam.color || '#2962ff'};">${awayTeam.abbreviation || awayTeam.name.substring(0, 2)}</div>
+                            <span style="font-weight: 600;">${awayTeam.name}</span>
+                        </div>
+                    </div>
+                    <div class="match-score">- : -</div>
+                    <div class="match-info">
+                        <div><i class="far fa-calendar"></i> ${dateStr}</div>
+                        <div><i class="far fa-clock"></i> ${timeStr}</div>
+                        <span class="match-status status-upcoming">Upcoming</span>
+                    </div>
+                `;
+                
+                fixturesList.appendChild(matchCard);
+            });
+        }
+
+        function loadResults() {
+            const resultsList = document.getElementById('resultsList');
+            if (!resultsList) return;
+            
+            const results = tournamentData.matches?.filter(m => m.status === 'completed') || [];
+            
+            if (results.length === 0) {
+                resultsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-futbol"></i>
+                        <h3>No Results Available</h3>
+                        <p>Match results will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            resultsList.innerHTML = '';
+            
+            results.sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
+            
+            results.forEach(result => {
+                const homeTeam = tournamentData.teams?.find(t => t.id == result.team1_id);
+                const awayTeam = tournamentData.teams?.find(t => t.id == result.team2_id);
+                
+                if (!homeTeam || !awayTeam) return;
+                
+                const matchCard = document.createElement('div');
+                matchCard.className = 'match-card finished';
+                
+                const matchDate = new Date(result.match_date);
+                const dateStr = matchDate.toLocaleDateString();
+                
+                matchCard.innerHTML = `
+                    <div class="teams">
+                        <div class="team">
+                            <div class="team-logo" style="border-color: ${homeTeam.color || '#00c853'};">${homeTeam.abbreviation || homeTeam.name.substring(0, 2)}</div>
+                            <span style="font-weight: 600;">${homeTeam.name}</span>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <div class="team-logo" style="border-color: ${awayTeam.color || '#2962ff'};">${awayTeam.abbreviation || awayTeam.name.substring(0, 2)}</div>
+                            <span style="font-weight: 600;">${awayTeam.name}</span>
+                        </div>
+                    </div>
+                    <div class="match-score">${result.team1_score || 0} : ${result.team2_score || 0}</div>
+                    <div class="match-info">
+                        <div><i class="far fa-calendar"></i> ${dateStr}</div>
+                        <span class="match-status status-finished">Finished</span>
+                    </div>
+                `;
+                
+                resultsList.appendChild(matchCard);
+            });
+        }
+
+        function loadStandings() {
+            const standingsBody = document.getElementById('standingsBody');
+            if (!standingsBody) return;
+            
+            if (!tournamentData.teams || tournamentData.teams.length === 0) {
+                standingsBody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="empty-state">
+                            <i class="fas fa-table"></i>
+                            <h3>No Standings Available</h3>
+                            <p>Add teams and matches to see standings</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            const standings = tournamentData.teams.map(team => {
+                const teamResults = tournamentData.matches?.filter(m => 
+                    m.status === 'completed' && (m.team1_id == team.id || m.team2_id == team.id)
+                ) || [];
+                
+                let played = 0, won = 0, drawn = 0, lost = 0;
+                let goalsFor = 0, goalsAgainst = 0;
+                
+                teamResults.forEach(result => {
+                    if (result.team1_id == team.id) {
+                        played++;
+                        goalsFor += result.team1_score || 0;
+                        goalsAgainst += result.team2_score || 0;
+                        if (result.team1_score > result.team2_score) won++;
+                        else if (result.team1_score < result.team2_score) lost++;
+                        else drawn++;
+                    } else if (result.team2_id == team.id) {
+                        played++;
+                        goalsFor += result.team2_score || 0;
+                        goalsAgainst += result.team1_score || 0;
+                        if (result.team2_score > result.team1_score) won++;
+                        else if (result.team2_score < result.team1_score) lost++;
+                        else drawn++;
+                    }
+                });
+                
+                return {
+                    teamName: team.name,
+                    teamAbbr: team.abbreviation || team.name.substring(0, 2),
+                    teamColor: team.color,
+                    played,
+                    won,
+                    drawn,
+                    lost,
+                    goalsFor,
+                    goalsAgainst,
+                    goalDifference: goalsFor - goalsAgainst,
+                    points: (won * 3) + drawn
+                };
+            });
+            
+            standings.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                return b.goalDifference - a.goalDifference;
+            });
+            
+            standingsBody.innerHTML = '';
+            
+            standings.forEach((standing, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="position">${index + 1}</span></td>
+                    <td>
+                        <div class="team-row">
+                            <div class="team-logo" style="width: 30px; height: 30px; border-color: ${standing.teamColor || '#00c853'};">${standing.teamAbbr}</div>
+                            ${standing.teamName}
+                        </div>
+                    </td>
+                    <td>${standing.played}</td>
+                    <td>${standing.won}</td>
+                    <td>${standing.drawn}</td>
+                    <td>${standing.lost}</td>
+                    <td>${standing.goalsFor}</td>
+                    <td>${standing.goalsAgainst}</td>
+                    <td>${standing.goalDifference > 0 ? '+' : ''}${standing.goalDifference}</td>
+                    <td><strong>${standing.points}</strong></td>
+                `;
+                standingsBody.appendChild(row);
+            });
+        }
+
+        function loadScorers() {
+            const scorersList = document.getElementById('scorersList');
+            if (!scorersList) return;
+            
+            if (!tournamentData.scorers || tournamentData.scorers.length === 0) {
+                scorersList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-star"></i>
+                        <h3>No Scorers Yet</h3>
+                        <p>Top scorers will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            scorersList.innerHTML = '';
+            
+            const sortedScorers = [...tournamentData.scorers].sort((a, b) => b.goals - a.goals);
+            
+            sortedScorers.forEach((scorer, index) => {
+                const team = tournamentData.teams?.find(t => t.id == scorer.teamId);
+                
+                const scorerCard = document.createElement('div');
+                scorerCard.className = 'scorer-card';
+                
+                scorerCard.innerHTML = `
+                    <div class="scorer-rank">${index + 1}</div>
+                    <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                        <div style="font-size: 2rem;">👤</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 1.1rem;">${scorer.player}</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">${team?.name || 'Unknown'}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.goals}</div>
+                            <div style="font-size: 0.8rem;">Goals</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.assists || 0}</div>
+                            <div style="font-size: 0.8rem;">Assists</div>
+                        </div>
+                    </div>
+                `;
+                
+                scorersList.appendChild(scorerCard);
+            });
+        }
+
+        function loadSponsors() {
+            const sponsorsList = document.getElementById('sponsorsList');
+            if (!sponsorsList) return;
+            
+            if (!tournamentData.sponsors || tournamentData.sponsors.length === 0) {
+                sponsorsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-handshake"></i>
+                        <h3>No Sponsors Yet</h3>
+                        <p>Sponsors will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            sponsorsList.innerHTML = '';
+            
+            tournamentData.sponsors.forEach(sponsor => {
+                const sponsorCard = document.createElement('div');
+                sponsorCard.className = 'ad-card';
+                
+                sponsorCard.innerHTML = `
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--secondary-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; border: 2px solid var(--tournament-green);">
+                        🏢
+                    </div>
+                    <h4 style="margin-bottom: 0.5rem;">${sponsor.name}</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">${sponsor.description || ''}</p>
+                    <p style="color: var(--tournament-blue); font-weight: 600; font-size: 0.9rem;">${sponsor.contact || ''}</p>
+                `;
+                
+                sponsorsList.appendChild(sponsorCard);
+            });
+            
+            // Also update footer sponsors
+            const footerSponsors = document.getElementById('footerSponsors');
+            if (footerSponsors) {
+                footerSponsors.innerHTML = '';
+                tournamentData.sponsors.slice(0, 4).forEach(sponsor => {
+                    const sponsorLogo = document.createElement('div');
+                    sponsorLogo.style.cssText = `
+                        width: 80px;
+                        height: 40px;
+                        background-color: rgba(255, 255, 255, 0.1);
+                        border-radius: 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        font-size: 1.2rem;
+                    `;
+                    sponsorLogo.textContent = sponsor.name.substring(0, 2).toUpperCase();
+                    footerSponsors.appendChild(sponsorLogo);
+                });
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                background-color: ${type === 'success' ? '#00c853' : '#ff3d00'};
+                max-width: 300px;
+            `;
+            
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>

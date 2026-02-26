@@ -1,7 +1,8 @@
-// Simple events.js with demo data
-let events = [
-  { id: 1, name: 'Premier League 2024', type: 'league', status: 'active', teams: [1,2,3,4,5,6], created_at: new Date().toISOString() },
-  { id: 2, name: 'Champions League 2024', type: 'knockout', status: 'active', teams: [1,2,3,4], created_at: new Date().toISOString() }
+// Simple sponsors.js with demo data
+let sponsors = [
+  { id: 1, name: 'Nike', description: 'Official kit supplier', contact: 'John Smith' },
+  { id: 2, name: 'Adidas', description: 'Sports equipment partner', contact: 'Sarah Johnson' },
+  { id: 3, name: 'Emirates', description: 'Official airline partner', contact: 'Ahmed Hassan' }
 ];
 
 export default async (req) => {
@@ -18,16 +19,14 @@ export default async (req) => {
 
   try {
     if (req.method === 'GET') {
-      return new Response(JSON.stringify(events), { headers });
+      return new Response(JSON.stringify(sponsors), { headers });
     }
     
     if (req.method === 'POST') {
-      const newEvent = await req.json();
-      newEvent.id = events.length + 1;
-      newEvent.created_at = new Date().toISOString();
-      newEvent.status = 'active';
-      events.push(newEvent);
-      return new Response(JSON.stringify(newEvent), { status: 201, headers });
+      const newSponsor = await req.json();
+      newSponsor.id = sponsors.length + 1;
+      sponsors.push(newSponsor);
+      return new Response(JSON.stringify(newSponsor), { status: 201, headers });
     }
     
     return new Response('Not found', { status: 404, headers });
@@ -41,5 +40,5 @@ export default async (req) => {
 };
 
 export const config = {
-  path: "/api/events"
+  path: "/api/sponsors"
 };

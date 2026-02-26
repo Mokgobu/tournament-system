@@ -8,8 +8,10 @@
     "deploy": "netlify deploy --prod"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.6.0",
-    "@netlify/functions": "^2.4.0"
+    "@neondatabase/serverless": "^1.0.2",
+    "@netlify/functions": "^2.4.0",
+    "@netlify/neon": "^0.1.2",
+    "dotenv": "^17.3.1"
   },
   "devDependencies": {
     "netlify-cli": "^17.0.0"

@@ -1,6 +1,9 @@
 export default async () => {
   return new Response(
-    JSON.stringify({ message: "Standings function ready" }),
+    JSON.stringify({ 
+      message: "Test function is working!",
+      time: new Date().toISOString()
+    }),
     { 
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -9,5 +12,5 @@ export default async () => {
 };
 
 export const config = {
-  path: "/api/standings"
+  path: "/api/test"
 };
