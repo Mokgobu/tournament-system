@@ -1,10 +1,22 @@
 import { neon } from '@netlify/neon';
 
 export default async () => {
-  const databaseUrl = process.env.NETLIFY_DATABASE_URL;
-  const sql = neon(databaseUrl);
-  
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json'
+  };
+
   try {
+    const databaseUrl = process.env.NETLIFY_DATABASE_URL;
+    if (!databaseUrl) {
+      return new Response(
+        JSON.stringify({ error: 'Database URL not found' }),
+        { status: 500, headers }
+      );
+    }
+
+    const sql = neon(databaseUrl);
+    
     // Create teams table
     await sql`
       CREATE TABLE IF NOT EXISTS teams (
@@ -16,6 +28,7 @@ export default async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
+    console.log('Teams table created');
 
     // Create events table
     await sql`
@@ -27,6 +40,7 @@ export default async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
+    console.log('Events table created');
 
     // Create matches table
     await sql`
@@ -42,6 +56,7 @@ export default async () => {
         status VARCHAR(20) DEFAULT 'scheduled'
       )
     `;
+    console.log('Matches table created');
 
     // Create standings table
     await sql`
@@ -59,6 +74,7 @@ export default async () => {
         UNIQUE(event_id, team_id)
       )
     `;
+    console.log('Standings table created');
 
     // Create scorers table
     await sql`
@@ -72,6 +88,7 @@ export default async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
+    console.log('Scorers table created');
 
     // Create sponsors table
     await sql`
@@ -84,23 +101,24 @@ export default async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
+    console.log('Sponsors table created');
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         message: "All database tables created successfully!" 
       }),
-      { 
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      }
+      { status: 200, headers }
     );
     
   } catch (error) {
-    console.error('Database setup error:', error);
+    console.error('Setup error:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500 }
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack 
+      }),
+      { status: 500, headers }
     );
   }
 };
