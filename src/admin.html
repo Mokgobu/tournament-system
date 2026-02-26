@@ -1583,46 +1583,47 @@ async function loadSponsors() {
         }
 
         async function saveEvent(event) {
-            event.preventDefault();
+    event.preventDefault();
+    
+    const selectedTeams = Array.from(document.querySelectorAll('#teamSelection input:checked'))
+        .map(cb => parseInt(cb.value));
+    
+    if (selectedTeams.length < 2) {
+        showAlert('Please select at least 2 teams', 'error');
+        return;
+    }
+    
+    const eventData = {
+        name: document.getElementById('eventName').value,
+        type: document.getElementById('eventType').value,
+        teams: selectedTeams
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE}/events`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData)
+        });
+        
+        if (response.ok) {
+            const newEvent = await response.json();
+            console.log('Event created:', newEvent);
             
-            const selectedTeams = Array.from(document.querySelectorAll('#teamSelection input:checked'))
-                .map(cb => parseInt(cb.value));
-            
-            if (selectedTeams.length < 2) {
-                showAlert('Please select at least 2 teams', 'error');
-                return;
-            }
-            
-            const eventData = {
-                name: document.getElementById('eventName').value,
-                type: document.getElementById('eventType').value,
-                teams: selectedTeams
-            };
-            
-            try {
-                closeModal('eventModal');
-                showAlert('Event created successfully (demo mode)', 'success');
-                
-                /* Uncomment when database is ready
-                const response = await fetch(`${API_BASE}/events`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(eventData)
-                });
-                
-                if (response.ok) {
-                    closeModal('eventModal');
-                    await loadEvents();
-                    loadSection(currentSection);
-                    showAlert('Event created successfully', 'success');
-                } else {
-                    showAlert('Error creating event', 'error');
-                }
-                */
-            } catch (error) {
-                showAlert('Error: ' + error.message, 'error');
-            }
+            closeModal('eventModal');
+            await loadEvents(); // Reload from database
+            await loadEventsSection(); // Refresh UI
+            showAlert('Event created successfully!', 'success');
+        } else {
+            const error = await response.json();
+            console.error('Error response:', error);
+            showAlert('Error: ' + (error.error || 'Unknown error'), 'error');
         }
+    } catch (error) {
+        console.error('Error creating event:', error);
+        showAlert('Error: ' + error.message, 'error');
+    }
+}
 
         // ============== SCORE FUNCTIONS ==============
         async function openScoreModal(matchId) {
