@@ -1434,9 +1434,10 @@ async function loadMatches() {
     try {
         const response = await fetch(`${API_BASE}/matches`);
         if (response.ok) {
-            const fetchedMatches = await response.json();
-            matches = fetchedMatches || [];
+            matches = await response.json();
+            console.log('Matches loaded from database:', matches);
         } else {
+            console.warn('Failed to load matches');
             matches = [];
         }
     } catch (error) {
