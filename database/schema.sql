@@ -1,3 +1,4 @@
+
 -- Create tables for tournament management system
 
 -- Teams table
