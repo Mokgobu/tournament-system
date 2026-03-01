@@ -7,6 +7,7 @@
   publish = "src"
   autoLaunch = true
 
+# Only this one redirect - remove any others
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
