@@ -1541,31 +1541,30 @@ async function loadSponsors() {
 }
 
         async function deleteTeam(id) {
-            if (!confirm('Are you sure you want to delete this team?')) return;
-            
-            try {
-                // For demo purposes, remove locally
-                teams = teams.filter(t => t.id != id);
-                await loadTeamsSection();
-                showAlert('Team deleted (demo mode)', 'success');
-                
-                /* Uncomment when database is ready
-                const response = await fetch(`${API_BASE}/teams/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                if (response.ok) {
-                    await loadTeams();
-                    loadSection(currentSection);
-                    showAlert('Team deleted', 'success');
-                } else {
-                    showAlert('Error deleting team', 'error');
-                }
-                */
-            } catch (error) {
-                showAlert('Error: ' + error.message, 'error');
-            }
+    if (!confirm('Are you sure you want to delete this team?')) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/teams/${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Success - reload teams
+            await loadTeams();
+            await loadTeamsSection();
+            showAlert('Team deleted successfully!', 'success');
+        } else {
+            // Show error message from server
+            showAlert('Error: ' + (data.error || 'Failed to delete team'), 'error');
         }
+    } catch (error) {
+        console.error('Error deleting team:', error);
+        showAlert('Error: ' + error.message, 'error');
+    }
+}
 
         // ============== EVENT FUNCTIONS ==============
         async function openEventModal() {
