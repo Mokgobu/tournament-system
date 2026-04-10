@@ -1,10 +1,8 @@
 export default async () => {
   return new Response(
     JSON.stringify({ 
-      status: "ok", 
-      message: "API is working!",
-      timestamp: new Date().toISOString(),
-      functions: ["teams", "events", "matches", "standings"]
+      message: "Test function is working!",
+      time: new Date().toISOString()
     }),
     { 
       status: 200,
@@ -14,5 +12,5 @@ export default async () => {
 };
 
 export const config = {
-  path: "/api/health"
+  path: "/api/test"
 };
