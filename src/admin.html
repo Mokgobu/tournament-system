@@ -6,6 +6,7 @@
     <title>TournamentPro - Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* [ALL YOUR EXISTING CSS STAYS THE SAME - keep everything you already have] */
         * {
             margin: 0;
             padding: 0;
@@ -23,7 +24,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 280px;
             background: rgba(10, 10, 10, 0.95);
@@ -106,7 +106,6 @@
             color: #00c853;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -134,7 +133,6 @@
             font-size: 1rem;
         }
 
-        /* Content Cards */
         .content-card {
             background: white;
             border-radius: 12px;
@@ -158,7 +156,6 @@
             color: #00c853;
         }
 
-        /* Forms */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -195,7 +192,6 @@
             border-color: #00c853;
         }
 
-        /* Logo Upload */
         .logo-upload {
             border: 2px dashed #e0e0e0;
             border-radius: 12px;
@@ -230,7 +226,6 @@
             display: none;
         }
 
-        /* Team Selection for Events */
         .team-selection {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -276,7 +271,6 @@
             font-size: 0.8rem;
         }
 
-        /* Buttons */
         .btn {
             padding: 12px 25px;
             border: none;
@@ -321,7 +315,6 @@
             color: white;
         }
 
-        /* Tables */
         .table-container {
             overflow-x: auto;
             margin-top: 20px;
@@ -374,7 +367,6 @@
             flex-wrap: wrap;
         }
 
-        /* Status Badges */
         .status-badge {
             padding: 5px 10px;
             border-radius: 20px;
@@ -420,7 +412,6 @@
             100% { opacity: 1; }
         }
 
-        /* Match Score Input */
         .score-input {
             width: 60px;
             text-align: center;
@@ -429,7 +420,6 @@
             border-radius: 4px;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -467,7 +457,6 @@
             color: #333;
         }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 50px;
@@ -504,7 +493,6 @@
             margin-bottom: 10px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 width: 80px;
@@ -538,7 +526,6 @@
 </head>
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>TournamentPro</h2>
@@ -558,8 +545,12 @@
                     <i class="fas fa-trophy"></i>
                     <span>Events</span>
                 </li>
-                <li onclick="loadSection('fixtures')">
+                <li onclick="loadSection('matches')">
                     <i class="fas fa-calendar-alt"></i>
+                    <span>Matches</span>
+                </li>
+                <li onclick="loadSection('fixtures')">
+                    <i class="fas fa-clock"></i>
                     <span>Fixtures</span>
                 </li>
                 <li onclick="loadSection('results')">
@@ -588,16 +579,13 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
             <div class="top-bar">
                 <h1 id="section-title">Dashboard</h1>
                 <div class="date" id="current-date"></div>
             </div>
 
-            <div id="content-area" class="content-area">
-                <!-- Content loads dynamically -->
-            </div>
+            <div id="content-area" class="content-area"></div>
         </div>
     </div>
 
@@ -606,26 +594,20 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('teamModal')">&times;</span>
             <h2 class="card-title"><i class="fas fa-users"></i> Add/Edit Team</h2>
-            
             <form id="teamForm" onsubmit="saveTeam(event)">
                 <input type="hidden" id="teamId">
-                
                 <div class="form-group">
                     <label for="teamName">Team Name *</label>
                     <input type="text" id="teamName" required placeholder="e.g., Manchester United">
                 </div>
-                
                 <div class="form-group">
                     <label for="teamAbbr">Abbreviation (3 letters)</label>
                     <input type="text" id="teamAbbr" maxlength="3" placeholder="e.g., MUN">
                 </div>
-                
                 <div class="form-group">
                     <label for="teamColor">Team Color</label>
                     <input type="color" id="teamColor" value="#00c853">
                 </div>
-                
-                <!-- Logo Upload Placeholder -->
                 <div class="logo-upload" id="logoUpload" onclick="document.getElementById('teamLogo').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <p>Click to upload team logo</p>
@@ -633,7 +615,6 @@
                     <img id="logoPreview" class="logo-preview" src="" alt="Logo preview">
                 </div>
                 <input type="file" id="teamLogo" accept="image/*" style="display: none;" onchange="previewLogo(event)">
-                
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-danger" onclick="closeModal('teamModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Team</button>
@@ -647,15 +628,12 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('eventModal')">&times;</span>
             <h2 class="card-title"><i class="fas fa-trophy"></i> Create New Event</h2>
-            
             <form id="eventForm" onsubmit="saveEvent(event)">
                 <input type="hidden" id="eventId">
-                
                 <div class="form-group">
                     <label for="eventName">Event Name *</label>
                     <input type="text" id="eventName" required placeholder="e.g., Summer Tournament 2024">
                 </div>
-                
                 <div class="form-group">
                     <label for="eventType">Tournament Type *</label>
                     <select id="eventType" required>
@@ -663,24 +641,18 @@
                         <option value="knockout">Knockout (Bracket)</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
                     <label for="eventVenue">Venue</label>
                     <input type="text" id="eventVenue" placeholder="e.g., Wembley Stadium">
                 </div>
-                
                 <div class="form-group">
                     <label for="eventStartTime">Start Date & Time</label>
                     <input type="datetime-local" id="eventStartTime">
                 </div>
-                
                 <div class="form-group">
                     <label>Select Teams * (minimum 2)</label>
-                    <div id="teamSelection" class="team-selection">
-                        <!-- Teams will be loaded here -->
-                    </div>
+                    <div id="teamSelection" class="team-selection"></div>
                 </div>
-                
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" class="btn btn-danger" onclick="closeModal('eventModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Create Event</button>
@@ -694,26 +666,19 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('scoreModal')">&times;</span>
             <h2 class="card-title"><i class="fas fa-futbol"></i> Update Match Score</h2>
-            
             <form id="scoreForm" onsubmit="updateScore(event)">
                 <input type="hidden" id="matchId">
-                
-                <div id="matchTeamsDisplay" style="text-align: center; margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #00c853, #2962ff); color: white; border-radius: 8px;">
-                    Loading...
-                </div>
-                
+                <div id="matchTeamsDisplay" style="text-align: center; margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #00c853, #2962ff); color: white; border-radius: 8px;">Loading...</div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label id="team1Label">Team 1</label>
                         <input type="number" id="team1Score" class="score-input" min="0" value="0" required style="width: 100%;">
                     </div>
-                    
                     <div class="form-group">
                         <label id="team2Label">Team 2</label>
                         <input type="number" id="team2Score" class="score-input" min="0" value="0" required style="width: 100%;">
                     </div>
                 </div>
-                
                 <div class="form-group">
                     <label for="matchStatus">Match Status</label>
                     <select id="matchStatus">
@@ -722,7 +687,6 @@
                         <option value="scheduled">Scheduled</option>
                     </select>
                 </div>
-                
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" class="btn btn-danger" onclick="closeModal('scoreModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Update Score</button>
@@ -736,39 +700,32 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('scorerModal')">&times;</span>
             <h2 class="card-title"><i class="fas fa-star"></i> Add/Edit Scorer</h2>
-            
             <form id="scorerForm" onsubmit="saveScorer(event)">
                 <input type="hidden" id="scorerId">
-                
                 <div class="form-group">
                     <label for="playerName">Player Name *</label>
                     <input type="text" id="playerName" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="playerTeam">Team *</label>
                     <select id="playerTeam" required>
                         <option value="">Select Team</option>
                     </select>
                 </div>
-                
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="goals">Goals</label>
                         <input type="number" id="goals" min="0" value="0">
                     </div>
-                    
                     <div class="form-group">
                         <label for="assists">Assists</label>
                         <input type="number" id="assists" min="0" value="0">
                     </div>
-                    
                     <div class="form-group">
                         <label for="matches">Matches</label>
                         <input type="number" id="matches" min="0" value="0">
                     </div>
                 </div>
-                
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" class="btn btn-danger" onclick="closeModal('scorerModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Scorer</button>
@@ -782,33 +739,26 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('sponsorModal')">&times;</span>
             <h2 class="card-title"><i class="fas fa-handshake"></i> Add/Edit Sponsor</h2>
-            
             <form id="sponsorForm" onsubmit="saveSponsor(event)">
                 <input type="hidden" id="sponsorId">
-                
                 <div class="form-group">
                     <label for="sponsorName">Sponsor Name *</label>
                     <input type="text" id="sponsorName" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="sponsorDesc">Description</label>
                     <textarea id="sponsorDesc" rows="3"></textarea>
                 </div>
-                
                 <div class="form-group">
                     <label for="sponsorContact">Contact Person</label>
                     <input type="text" id="sponsorContact">
                 </div>
-                
-                <!-- Sponsor Logo Placeholder -->
                 <div class="logo-upload" onclick="document.getElementById('sponsorLogo').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <p>Click to upload sponsor logo</p>
                     <img id="sponsorLogoPreview" class="logo-preview" src="" alt="Logo preview">
                 </div>
                 <input type="file" id="sponsorLogo" accept="image/*" style="display: none;" onchange="previewSponsorLogo(event)">
-                
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" class="btn btn-danger" onclick="closeModal('sponsorModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Sponsor</button>
@@ -818,22 +768,15 @@
     </div>
 
     <script>
-        // API base URL
-        const API_BASE = window.location.hostname === 'localhost' 
-            ? 'http://localhost:8888/api'
-            : '/api';
+        const API_BASE = '/.netlify/functions';
         
-        // Current section
         let currentSection = 'dashboard';
-        
-        // Global data
         let teams = [];
         let events = [];
         let matches = [];
         let scorers = [];
         let sponsors = [];
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateDate();
             loadSection('dashboard');
@@ -841,172 +784,73 @@
 
         function updateDate() {
             const now = new Date();
-            document.getElementById('current-date').textContent = 
-                now.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
 
-        // Load section
         async function loadSection(section) {
             currentSection = section;
             
-            // Update active menu
             document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+            const activeMenuItem = Array.from(document.querySelectorAll('.sidebar-menu li')).find(li => li.getAttribute('onclick')?.includes(section));
+            if (activeMenuItem) activeMenuItem.classList.add('active');
             
-            // Find and activate the clicked menu item
-            const activeMenuItem = Array.from(document.querySelectorAll('.sidebar-menu li')).find(
-                li => li.getAttribute('onclick')?.includes(section)
-            );
-            if (activeMenuItem) {
-                activeMenuItem.classList.add('active');
-            }
+            document.getElementById('section-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            document.getElementById('content-area').innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading ${section}...</p></div>`;
             
-            // Update title
-            document.getElementById('section-title').textContent = 
-                section.charAt(0).toUpperCase() + section.slice(1);
-            
-            // Show loading
-            document.getElementById('content-area').innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Loading ${section}...</p>
-                </div>
-            `;
-            
-            // Load section content
             switch(section) {
-                case 'dashboard':
-                    await loadDashboard();
-                    break;
-                case 'teams':
-                    await loadTeamsSection();
-                    break;
-                case 'events':
-                    await loadEventsSection();
-                    break;
-                case 'fixtures':
-                    await loadFixturesSection();
-                    break;
-                case 'results':
-                    await loadResultsSection();
-                    break;
-                case 'standings':
-                    await loadStandingsSection();
-                    break;
-                case 'scorers':
-                    await loadScorersSection();
-                    break;
-                case 'sponsors':
-                    await loadSponsorsSection();
-                    break;
+                case 'dashboard': await loadDashboard(); break;
+                case 'teams': await loadTeamsSection(); break;
+                case 'events': await loadEventsSection(); break;
+                case 'matches': await loadMatchesSection(); break;
+                case 'fixtures': await loadFixturesSection(); break;
+                case 'results': await loadResultsSection(); break;
+                case 'standings': await loadStandingsSection(); break;
+                case 'scorers': await loadScorersSection(); break;
+                case 'sponsors': await loadSponsorsSection(); break;
             }
         }
 
-        // Dashboard
         async function loadDashboard() {
+            await loadAllData();
             const content = document.getElementById('content-area');
+            const activeEvents = events.filter(e => e.status === 'active').length;
             
-            try {
-                // Fetch all data
-                await loadAllData();
-                
-                const activeEvents = events.filter(e => e.status === 'active').length;
-                const totalTeams = teams.length;
-                const totalMatches = matches.length;
-                const liveMatches = matches.filter(m => m.status === 'live').length;
-                
-                content.innerHTML = `
-                    <div class="content-card">
-                        <h2 class="card-title"><i class="fas fa-chart-bar"></i> Overview</h2>
-                        
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                            <div style="background: linear-gradient(135deg, #00c853, #69f0ae); padding: 20px; border-radius: 10px; color: white;">
-                                <i class="fas fa-trophy" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                                <h3 style="font-size: 2rem;">${activeEvents}</h3>
-                                <p>Active Tournaments</p>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #2962ff, #82b1ff); padding: 20px; border-radius: 10px; color: white;">
-                                <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                                <h3 style="font-size: 2rem;">${totalTeams}</h3>
-                                <p>Total Teams</p>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #ff3d00, #ff7539); padding: 20px; border-radius: 10px; color: white;">
-                                <i class="fas fa-calendar-alt" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                                <h3 style="font-size: 2rem;">${totalMatches}</h3>
-                                <p>Total Matches</p>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #aa00ff, #e040fb); padding: 20px; border-radius: 10px; color: white;">
-                                <i class="fas fa-fire" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                                <h3 style="font-size: 2rem;">${liveMatches}</h3>
-                                <p>Live Now</p>
-                            </div>
+            content.innerHTML = `
+                <div class="content-card">
+                    <h2 class="card-title"><i class="fas fa-chart-bar"></i> Overview</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background: linear-gradient(135deg, #00c853, #69f0ae); padding: 20px; border-radius: 10px; color: white;">
+                            <i class="fas fa-trophy" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h3 style="font-size: 2rem;">${activeEvents}</h3>
+                            <p>Active Tournaments</p>
                         </div>
-                        
-                        <div style="margin-top: 30px;">
-                            <h3 style="margin-bottom: 15px;">Recent Activity</h3>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Match</th>
-                                            <th>Event</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${matches.slice(0, 5).map(m => {
-                                            const homeTeam = teams.find(t => t.id == m.team1_id);
-                                            const awayTeam = teams.find(t => t.id == m.team2_id);
-                                            const event = events.find(e => e.id == m.event_id);
-                                            
-                                            return `
-                                                <tr>
-                                                    <td>${homeTeam?.name || 'TBD'} vs ${awayTeam?.name || 'TBD'}</td>
-                                                    <td>${event?.name || 'Unknown'}</td>
-                                                    <td>${m.match_date ? new Date(m.match_date).toLocaleDateString() : 'TBD'}</td>
-                                                    <td><span class="status-badge status-${m.status}">${m.status}</span></td>
-                                                </tr>
-                                            `;
-                                        }).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div style="background: linear-gradient(135deg, #2962ff, #82b1ff); padding: 20px; border-radius: 10px; color: white;">
+                            <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h3 style="font-size: 2rem;">${teams.length}</h3>
+                            <p>Total Teams</p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #ff3d00, #ff7539); padding: 20px; border-radius: 10px; color: white;">
+                            <i class="fas fa-calendar-alt" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h3 style="font-size: 2rem;">${matches.length}</h3>
+                            <p>Total Matches</p>
                         </div>
                     </div>
-                `;
-            } catch (error) {
-                content.innerHTML = `<div class="error">Error loading dashboard: ${error.message}</div>`;
-            }
+                </div>
+            `;
         }
 
-        // Teams Section
         async function loadTeamsSection() {
-            const content = document.getElementById('content-area');
-            
             await loadTeams();
+            const content = document.getElementById('content-area');
             
             if (teams.length === 0) {
                 content.innerHTML = `
                     <div class="content-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                             <h2 class="card-title"><i class="fas fa-users"></i> Manage Teams</h2>
-                            <button class="btn btn-primary" onclick="openTeamModal()">
-                                <i class="fas fa-plus"></i> Add Team
-                            </button>
+                            <button class="btn btn-primary" onclick="openTeamModal()"><i class="fas fa-plus"></i> Add Team</button>
                         </div>
-                        <div class="empty-state">
-                            <i class="fas fa-users"></i>
-                            <h3>No Teams Yet</h3>
-                            <p>Click "Add Team" to create your first team!</p>
-                        </div>
+                        <div class="empty-state"><i class="fas fa-users"></i><h3>No Teams Yet</h3><p>Click "Add Team" to create your first team!</p></div>
                     </div>
                 `;
                 return;
@@ -1014,43 +858,23 @@
             
             content.innerHTML = `
                 <div class="content-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                         <h2 class="card-title"><i class="fas fa-users"></i> Manage Teams</h2>
-                        <button class="btn btn-primary" onclick="openTeamModal()">
-                            <i class="fas fa-plus"></i> Add Team
-                        </button>
+                        <button class="btn btn-primary" onclick="openTeamModal()"><i class="fas fa-plus"></i> Add Team</button>
                     </div>
-                    
                     <div class="table-container">
-                        </table>
-                            <thead>
-                                <tr>
-                                    <th>Logo</th>
-                                    <th>Team Name</th>
-                                    <th>Abbr</th>
-                                    <th>Color</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
+                        <table>
+                            <thead><tr><th>Logo</th><th>Team Name</th><th>Abbr</th><th>Color</th><th>Actions</th></tr></thead>
                             <tbody>
                                 ${teams.map(team => `
                                     <tr>
-                                        <td>
-                                            ${team.logo ? 
-                                                `<img src="${team.logo}" class="team-logo-table" alt="${team.name}">` : 
-                                                `<div class="logo-placeholder" style="background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div>`
-                                            }
-                                        </td>
+                                        <td><div class="logo-placeholder" style="background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div></td>
                                         <td><strong>${team.name}</strong></td>
                                         <td>${team.abbreviation || ''}</td>
                                         <td><span style="display: inline-block; width: 20px; height: 20px; background: ${team.color || '#00c853'}; border-radius: 4px;"></span></td>
                                         <td class="actions">
-                                            <button class="btn btn-edit" onclick="editTeam(${team.id})">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </button>
-                                            <button class="btn btn-danger" onclick="deleteTeam(${team.id})">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
+                                            <button class="btn btn-edit" onclick="editTeam(${team.id})"><i class="fas fa-edit"></i> Edit</button>
+                                            <button class="btn btn-danger" onclick="deleteTeam(${team.id})"><i class="fas fa-trash"></i> Delete</button>
                                         </td>
                                     </tr>
                                 `).join('')}
@@ -1061,27 +885,17 @@
             `;
         }
 
-        // Events Section
-        async function loadEventsSection() {
+        async function loadMatchesSection() {
+            await loadMatches();
+            await loadTeams();
+            await loadEvents();
             const content = document.getElementById('content-area');
             
-            await loadEvents();
-            await loadTeams();
-            
-            if (events.length === 0) {
+            if (matches.length === 0) {
                 content.innerHTML = `
                     <div class="content-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h2 class="card-title"><i class="fas fa-trophy"></i> Manage Events</h2>
-                            <button class="btn btn-primary" onclick="openEventModal()">
-                                <i class="fas fa-plus"></i> Create Event
-                            </button>
-                        </div>
-                        <div class="empty-state">
-                            <i class="fas fa-trophy"></i>
-                            <h3>No Events Yet</h3>
-                            <p>Click "Create Event" to start a tournament!</p>
-                        </div>
+                        <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Manage Matches</h2>
+                        <div class="empty-state"><i class="fas fa-calendar-alt"></i><h3>No Matches Yet</h3><p>Create an event to automatically generate matches</p></div>
                     </div>
                 `;
                 return;
@@ -1089,50 +903,29 @@
             
             content.innerHTML = `
                 <div class="content-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2 class="card-title"><i class="fas fa-trophy"></i> Manage Events</h2>
-                        <button class="btn btn-primary" onclick="openEventModal()">
-                            <i class="fas fa-plus"></i> Create Event
-                        </button>
-                    </div>
-                    
+                    <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Manage Matches</h2>
                     <div class="table-container">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Event Name</th>
-                                    <th>Type</th>
-                                    <th>Venue</th>
-                                    <th>Start Time</th>
-                                    <th>Status</th>
-                                    <th>Teams</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>ID</th><th>Match</th><th>Score</th><th>Event</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
                             <tbody>
-                                ${events.map(event => {
-                                    const startTime = event.start_time 
-                                        ? new Date(event.start_time).toLocaleString() 
-                                        : 'Not set';
-                                    
+                                ${matches.map(match => {
+                                    const homeTeam = teams.find(t => t.id == match.team1_id);
+                                    const awayTeam = teams.find(t => t.id == match.team2_id);
+                                    const event = events.find(e => e.id == match.event_id);
                                     return `
-                                    <tr>
-                                        <td><strong>${event.name}</strong></td>
-                                        <td><span class="status-badge status-${event.type}">${event.type}</span></td>
-                                        <td>${event.venue || 'TBD'}</td>
-                                        <td>${startTime}</td>
-                                        <td><span class="status-badge status-${event.status}">${event.status}</span></td>
-                                        <td>${event.teams_count || 0} teams</td>
-                                        <td class="actions">
-                                            <button class="btn btn-edit" onclick="editEvent(${event.id})">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </button>
-                                            <button class="btn btn-danger" onclick="deleteEvent(${event.id})">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `}).join('')}
+                                        <tr>
+                                            <td>#${match.id}</td>
+                                            <td><strong>${homeTeam?.name || 'TBD'}</strong> vs <strong>${awayTeam?.name || 'TBD'}</strong></td>
+                                            <td>${match.status === 'completed' ? `${match.team1_score || 0} - ${match.team2_score || 0}` : 'Not Played'}</td>
+                                            <td>${event?.name || 'Unknown'}</td>
+                                            <td>${match.match_date ? new Date(match.match_date).toLocaleDateString() : 'TBD'}</td>
+                                            <td><span class="status-badge status-${match.status === 'completed' ? 'completed' : 'scheduled'}">${match.status || 'scheduled'}</span></td>
+                                            <td class="actions">
+                                                <button class="btn btn-edit" onclick="openScoreModal(${match.id})"><i class="fas fa-pen"></i> Score</button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
                             </tbody>
                         </table>
                     </div>
@@ -1140,68 +933,78 @@
             `;
         }
 
-        // Fixtures Section
-        async function loadFixturesSection() {
+        async function loadEventsSection() {
+            await loadEvents();
+            await loadTeams();
             const content = document.getElementById('content-area');
             
+            if (events.length === 0) {
+                content.innerHTML = `
+                    <div class="content-card">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <h2 class="card-title"><i class="fas fa-trophy"></i> Manage Events</h2>
+                            <button class="btn btn-primary" onclick="openEventModal()"><i class="fas fa-plus"></i> Create Event</button>
+                        </div>
+                        <div class="empty-state"><i class="fas fa-trophy"></i><h3>No Events Yet</h3><p>Click "Create Event" to start a tournament!</p></div>
+                    </div>
+                `;
+                return;
+            }
+            
+            content.innerHTML = `
+                <div class="content-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <h2 class="card-title"><i class="fas fa-trophy"></i> Manage Events</h2>
+                        <button class="btn btn-primary" onclick="openEventModal()"><i class="fas fa-plus"></i> Create Event</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Event Name</th><th>Type</th><th>Venue</th><th>Start Time</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody>
+                                ${events.map(event => `
+                                    <tr>
+                                        <td><strong>${event.name}</strong></td>
+                                        <td><span class="status-badge status-${event.type}">${event.type}</span></td>
+                                        <td>${event.venue || 'TBD'}</td>
+                                        <td>${event.start_time ? new Date(event.start_time).toLocaleString() : 'Not set'}</td>
+                                        <td><span class="status-badge status-${event.status}">${event.status}</span></td>
+                                        <td class="actions">
+                                            <button class="btn btn-edit" onclick="editEvent(${event.id})"><i class="fas fa-edit"></i> Edit</button>
+                                            <button class="btn btn-danger" onclick="deleteEvent(${event.id})"><i class="fas fa-trash"></i> Delete</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadFixturesSection() {
             await loadMatches();
             await loadTeams();
             await loadEvents();
-            
             const fixtures = matches.filter(m => m.status === 'scheduled');
+            const content = document.getElementById('content-area');
             
             if (fixtures.length === 0) {
-                content.innerHTML = `
-                    <div class="content-card">
-                        <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Upcoming Fixtures</h2>
-                        <div class="empty-state">
-                            <i class="fas fa-calendar-alt"></i>
-                            <h3>No Fixtures Scheduled</h3>
-                            <p>Create an event to generate fixtures</p>
-                        </div>
-                    </div>
-                `;
+                content.innerHTML = `<div class="content-card"><h2 class="card-title"><i class="fas fa-calendar-alt"></i> Upcoming Fixtures</h2><div class="empty-state"><i class="fas fa-calendar-alt"></i><h3>No Fixtures Scheduled</h3></div></div>`;
                 return;
             }
             
             content.innerHTML = `
                 <div class="content-card">
                     <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Upcoming Fixtures</h2>
-                    
                     <div class="table-container">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Match</th>
-                                    <th>Event</th>
-                                    <th>Venue</th>
-                                    <th>Date/Time</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Match</th><th>Event</th><th>Date/Time</th><th>Status</th></thead>
                             <tbody>
                                 ${fixtures.map(fixture => {
                                     const homeTeam = teams.find(t => t.id == fixture.team1_id);
                                     const awayTeam = teams.find(t => t.id == fixture.team2_id);
                                     const event = events.find(e => e.id == fixture.event_id);
-                                    
-                                    return `
-                                        <tr>
-                                            <td>
-                                                <div style="display: flex; align-items: center; gap: 10px;">
-                                                    <div class="logo-placeholder" style="width: 30px; height: 30px; background: ${homeTeam?.color || '#00c853'};">${homeTeam?.abbreviation || 'T1'}</div>
-                                                    <span>${homeTeam?.name || 'TBD'}</span>
-                                                    <span>vs</span>
-                                                    <span>${awayTeam?.name || 'TBD'}</span>
-                                                    <div class="logo-placeholder" style="width: 30px; height: 30px; background: ${awayTeam?.color || '#2962ff'};">${awayTeam?.abbreviation || 'T2'}</div>
-                                                </div>
-                                            </td>
-                                            <td>${event?.name || 'Unknown'}</td>
-                                            <td>${fixture.venue || event?.venue || 'TBD'}</td>
-                                            <td>${fixture.match_date ? new Date(fixture.match_date).toLocaleString() : 'TBD'}</td>
-                                            <td><span class="status-badge status-scheduled">Scheduled</span></td>
-                                        </tr>
-                                    `;
+                                    return `<tr><td><strong>${homeTeam?.name || 'TBD'}</strong> vs <strong>${awayTeam?.name || 'TBD'}</strong></td><td>${event?.name || 'Unknown'}</td><td>${fixture.match_date ? new Date(fixture.match_date).toLocaleString() : 'TBD'}</td><td><span class="status-badge status-scheduled">Scheduled</span></td></tr>`;
                                 }).join('')}
                             </tbody>
                         </table>
@@ -1210,66 +1013,30 @@
             `;
         }
 
-        // Results Section
         async function loadResultsSection() {
-            const content = document.getElementById('content-area');
-            
             await loadMatches();
             await loadTeams();
             await loadEvents();
-            
-            const results = matches.filter(m => m.status === 'completed' || m.status === 'live');
+            const results = matches.filter(m => m.status === 'completed');
+            const content = document.getElementById('content-area');
             
             if (results.length === 0) {
-                content.innerHTML = `
-                    <div class="content-card">
-                        <h2 class="card-title"><i class="fas fa-futbol"></i> Match Results</h2>
-                        <div class="empty-state">
-                            <i class="fas fa-futbol"></i>
-                            <h3>No Results Yet</h3>
-                            <p>Update scores in the Results section</p>
-                        </div>
-                    </div>
-                `;
+                content.innerHTML = `<div class="content-card"><h2 class="card-title"><i class="fas fa-futbol"></i> Match Results</h2><div class="empty-state"><i class="fas fa-futbol"></i><h3>No Results Yet</h3></div></div>`;
                 return;
             }
             
             content.innerHTML = `
                 <div class="content-card">
                     <h2 class="card-title"><i class="fas fa-futbol"></i> Match Results</h2>
-                    
                     <div class="table-container">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Match</th>
-                                    <th>Score</th>
-                                    <th>Event</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Match</th><th>Score</th><th>Event</th><th>Date</th><th>Actions</th></thead>
                             <tbody>
                                 ${results.map(match => {
                                     const homeTeam = teams.find(t => t.id == match.team1_id);
                                     const awayTeam = teams.find(t => t.id == match.team2_id);
                                     const event = events.find(e => e.id == match.event_id);
-                                    
-                                    return `
-                                        <tr>
-                                            <td>${homeTeam?.name || 'TBD'} vs ${awayTeam?.name || 'TBD'}</td>
-                                            <td><strong>${match.team1_score || 0} - ${match.team2_score || 0}</strong></td>
-                                            <td>${event?.name || 'Unknown'}</td>
-                                            <td>${match.match_date ? new Date(match.match_date).toLocaleDateString() : 'TBD'}</td>
-                                            <td><span class="status-badge status-${match.status}">${match.status}</span></td>
-                                            <td>
-                                                <button class="btn btn-edit" onclick="openScoreModal(${match.id})">
-                                                    <i class="fas fa-pen"></i> Update
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `;
+                                    return `<tr><td><strong>${homeTeam?.name || 'TBD'}</strong> vs <strong>${awayTeam?.name || 'TBD'}</strong></td><td><strong>${match.team1_score || 0} - ${match.team2_score || 0}</strong></td><td>${event?.name || 'Unknown'}</td><td>${match.match_date ? new Date(match.match_date).toLocaleDateString() : 'TBD'}</td><td><button class="btn btn-edit" onclick="openScoreModal(${match.id})"><i class="fas fa-pen"></i> Update</button></td></tr>`;
                                 }).join('')}
                             </tbody>
                         </table>
@@ -1278,266 +1045,86 @@
             `;
         }
 
-        // Standings Section
         async function loadStandingsSection() {
-            const content = document.getElementById('content-area');
-            
             await loadTeams();
             await loadMatches();
-            await loadEvents();
-            
-            if (teams.length === 0 || matches.length === 0) {
-                content.innerHTML = `
-                    <div class="content-card">
-                        <h2 class="card-title"><i class="fas fa-table"></i> Tournament Standings</h2>
-                        <div class="empty-state">
-                            <i class="fas fa-table"></i>
-                            <h3>No Standings Available</h3>
-                            <p>Add teams and matches to see standings</p>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Calculate standings
             const standings = teams.map(team => {
-                const teamMatches = matches.filter(m => 
-                    m.status === 'completed' && (m.team1_id == team.id || m.team2_id == team.id)
-                );
-                
-                let played = 0, won = 0, drawn = 0, lost = 0;
-                let goalsFor = 0, goalsAgainst = 0;
-                
+                const teamMatches = matches.filter(m => m.status === 'completed' && (m.team1_id == team.id || m.team2_id == team.id));
+                let played = 0, won = 0, drawn = 0, lost = 0, goalsFor = 0, goalsAgainst = 0;
                 teamMatches.forEach(m => {
                     if (m.team1_id == team.id) {
-                        played++;
-                        goalsFor += m.team1_score || 0;
-                        goalsAgainst += m.team2_score || 0;
+                        played++; goalsFor += m.team1_score || 0; goalsAgainst += m.team2_score || 0;
                         if (m.team1_score > m.team2_score) won++;
                         else if (m.team1_score < m.team2_score) lost++;
                         else drawn++;
-                    } else if (m.team2_id == team.id) {
-                        played++;
-                        goalsFor += m.team2_score || 0;
-                        goalsAgainst += m.team1_score || 0;
+                    } else {
+                        played++; goalsFor += m.team2_score || 0; goalsAgainst += m.team1_score || 0;
                         if (m.team2_score > m.team1_score) won++;
                         else if (m.team2_score < m.team1_score) lost++;
                         else drawn++;
                     }
                 });
-                
-                return {
-                    ...team,
-                    played,
-                    won,
-                    drawn,
-                    lost,
-                    goalsFor,
-                    goalsAgainst,
-                    gd: goalsFor - goalsAgainst,
-                    points: (won * 3) + drawn
-                };
-            }).sort((a, b) => {
-                if (b.points !== a.points) return b.points - a.points;
-                return b.gd - a.gd;
-            });
+                return { ...team, played, won, drawn, lost, goalsFor, goalsAgainst, gd: goalsFor - goalsAgainst, points: (won * 3) + drawn };
+            }).sort((a, b) => b.points - a.points || b.gd - a.gd);
             
-            content.innerHTML = `
+            document.getElementById('content-area').innerHTML = `
                 <div class="content-card">
                     <h2 class="card-title"><i class="fas fa-table"></i> Tournament Standings</h2>
-                    
                     <div class="table-container">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Pos</th>
-                                    <th>Team</th>
-                                    <th>P</th>
-                                    <th>W</th>
-                                    <th>D</th>
-                                    <th>L</th>
-                                    <th>GF</th>
-                                    <th>GA</th>
-                                    <th>GD</th>
-                                    <th>Pts</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${standings.map((team, index) => `
-                                    <tr>
-                                        <td><strong>${index + 1}</strong></td>
-                                        <td>
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                ${team.logo ? 
-                                                    `<img src="${team.logo}" style="width: 30px; height: 30px; border-radius: 50%;">` : 
-                                                    `<div class="logo-placeholder" style="width: 30px; height: 30px; background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div>`
-                                                }
-                                                ${team.name}
-                                            </div>
-                                        </td>
-                                        <td>${team.played}</td>
-                                        <td>${team.won}</td>
-                                        <td>${team.drawn}</td>
-                                        <td>${team.lost}</td>
-                                        <td>${team.goalsFor}</td>
-                                        <td>${team.goalsAgainst}</td>
-                                        <td>${team.gd > 0 ? '+' : ''}${team.gd}</td>
-                                        <td><strong>${team.points}</strong></td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
+                            <thead><tr><th>Pos</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead>
+                            <tbody>${standings.map((team, i) => `<tr><td><strong>${i + 1}</strong></td><td><div style="display: flex; align-items: center; gap: 10px;"><div class="logo-placeholder" style="width: 30px; height: 30px; background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div>${team.name}</div></td><td>${team.played}</td><td>${team.won}</td><td>${team.drawn}</td><td>${team.lost}</td><td>${team.goalsFor}</td><td>${team.goalsAgainst}</td><td>${team.gd > 0 ? '+' : ''}${team.gd}</td><td><strong>${team.points}</strong></td></tr>`).join('')}</tbody>
                         </table>
                     </div>
                 </div>
             `;
         }
 
-        // Scorers Section
         async function loadScorersSection() {
-            const content = document.getElementById('content-area');
-            
             await loadTeams();
             await loadScorers();
+            const content = document.getElementById('content-area');
             
             if (scorers.length === 0) {
-                content.innerHTML = `
-                    <div class="content-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h2 class="card-title"><i class="fas fa-star"></i> Top Scorers</h2>
-                            <button class="btn btn-primary" onclick="openScorerModal()">
-                                <i class="fas fa-plus"></i> Add Scorer
-                            </button>
-                        </div>
-                        <div class="empty-state">
-                            <i class="fas fa-star"></i>
-                            <h3>No Scorers Yet</h3>
-                            <p>Click "Add Scorer" to track top goalscorers</p>
-                        </div>
-                    </div>
-                `;
+                content.innerHTML = `<div class="content-card"><div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><h2 class="card-title"><i class="fas fa-star"></i> Top Scorers</h2><button class="btn btn-primary" onclick="openScorerModal()"><i class="fas fa-plus"></i> Add Scorer</button></div><div class="empty-state"><i class="fas fa-star"></i><h3>No Scorers Yet</h3></div></div>`;
                 return;
             }
             
             content.innerHTML = `
                 <div class="content-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                         <h2 class="card-title"><i class="fas fa-star"></i> Top Scorers</h2>
-                        <button class="btn btn-primary" onclick="openScorerModal()">
-                            <i class="fas fa-plus"></i> Add Scorer
-                        </button>
+                        <button class="btn btn-primary" onclick="openScorerModal()"><i class="fas fa-plus"></i> Add Scorer</button>
                     </div>
-                    
                     <div class="table-container">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Player</th>
-                                    <th>Team</th>
-                                    <th>Goals</th>
-                                    <th>Assists</th>
-                                    <th>Matches</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${scorers.sort((a, b) => b.goals - a.goals).map((scorer, index) => {
-                                    const team = teams.find(t => t.id == scorer.team_id);
-                                    return `
-                                        <tr>
-                                            <td><strong>${index + 1}</strong></td>
-                                            <td>${scorer.player}</td>
-                                            <td>${team?.name || 'Unknown'}</td>
-                                            <td><strong>${scorer.goals}</strong></td>
-                                            <td>${scorer.assists || 0}</td>
-                                            <td>${scorer.matches || 0}</td>
-                                            <td class="actions">
-                                                <button class="btn btn-edit" onclick="editScorer(${scorer.id})">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="btn btn-danger" onclick="deleteScorer(${scorer.id})">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
+                            <thead><tr><th>Rank</th><th>Player</th><th>Team</th><th>Goals</th><th>Assists</th><th>Actions</th></tr></thead>
+                            <tbody>${scorers.sort((a,b) => b.goals - a.goals).map((scorer, i) => `<tr><td><strong>${i+1}</strong></td><td>${scorer.player}</td><td>${teams.find(t => t.id == scorer.team_id)?.name || 'Unknown'}</td><td><strong>${scorer.goals}</strong></td><td>${scorer.assists || 0}</td><td class="actions"><button class="btn btn-edit" onclick="editScorer(${scorer.id})"><i class="fas fa-edit"></i></button><button class="btn btn-danger" onclick="deleteScorer(${scorer.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>
                         </table>
                     </div>
                 </div>
             `;
         }
 
-        // Sponsors Section
         async function loadSponsorsSection() {
+            await loadSponsors();
             const content = document.getElementById('content-area');
             
-            await loadSponsors();
-            
             if (sponsors.length === 0) {
-                content.innerHTML = `
-                    <div class="content-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h2 class="card-title"><i class="fas fa-handshake"></i> Sponsors</h2>
-                            <button class="btn btn-primary" onclick="openSponsorModal()">
-                                <i class="fas fa-plus"></i> Add Sponsor
-                            </button>
-                        </div>
-                        <div class="empty-state">
-                            <i class="fas fa-handshake"></i>
-                            <h3>No Sponsors Yet</h3>
-                            <p>Click "Add Sponsor" to add partners</p>
-                        </div>
-                    </div>
-                `;
+                content.innerHTML = `<div class="content-card"><div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><h2 class="card-title"><i class="fas fa-handshake"></i> Sponsors</h2><button class="btn btn-primary" onclick="openSponsorModal()"><i class="fas fa-plus"></i> Add Sponsor</button></div><div class="empty-state"><i class="fas fa-handshake"></i><h3>No Sponsors Yet</h3></div></div>`;
                 return;
             }
             
             content.innerHTML = `
                 <div class="content-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                         <h2 class="card-title"><i class="fas fa-handshake"></i> Sponsors</h2>
-                        <button class="btn btn-primary" onclick="openSponsorModal()">
-                            <i class="fas fa-plus"></i> Add Sponsor
-                        </button>
+                        <button class="btn btn-primary" onclick="openSponsorModal()"><i class="fas fa-plus"></i> Add Sponsor</button>
                     </div>
-                    
                     <div class="table-container">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Logo</th>
-                                    <th>Sponsor Name</th>
-                                    <th>Description</th>
-                                    <th>Contact</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${sponsors.map(sponsor => `
-                                    <tr>
-                                        <td>
-                                            ${sponsor.logo ? 
-                                                `<img src="${sponsor.logo}" style="width: 40px; height: 40px; border-radius: 8px;">` : 
-                                                `<div class="logo-placeholder" style="background: #00c853;">SP</div>`
-                                            }
-                                        </td>
-                                        <td><strong>${sponsor.name}</strong></td>
-                                        <td>${sponsor.description || ''}</td>
-                                        <td>${sponsor.contact || ''}</td>
-                                        <td class="actions">
-                                            <button class="btn btn-edit" onclick="editSponsor(${sponsor.id})">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-danger" onclick="deleteSponsor(${sponsor.id})">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
+                            <thead><tr><th>Logo</th><th>Sponsor Name</th><th>Description</th><th>Contact</th><th>Actions</th></tr></thead>
+                            <tbody>${sponsors.map(sponsor => `<tr><td><div class="logo-placeholder" style="background: #00c853;">SP</div></td><td><strong>${sponsor.name}</strong></td><td>${sponsor.description || ''}</td><td>${sponsor.contact || ''}</td><td class="actions"><button class="btn btn-edit" onclick="editSponsor(${sponsor.id})"><i class="fas fa-edit"></i></button><button class="btn btn-danger" onclick="deleteSponsor(${sponsor.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody>
                         </table>
                     </div>
                 </div>
@@ -1546,89 +1133,47 @@
 
         // ============== DATA LOADING ==============
         async function loadAllData() {
-            await Promise.all([
-                loadTeams(),
-                loadEvents(),
-                loadMatches(),
-                loadScorers(),
-                loadSponsors()
-            ]);
+            await Promise.all([loadTeams(), loadEvents(), loadMatches(), loadScorers(), loadSponsors()]);
         }
 
         async function loadTeams() {
             try {
                 const response = await fetch(`${API_BASE}/teams`);
-                if (response.ok) {
-                    teams = await response.json();
-                    console.log('Teams loaded:', teams.length);
-                } else {
-                    console.warn('Failed to load teams');
-                    teams = [];
-                }
-            } catch (error) {
-                console.error('Error loading teams:', error);
-                teams = [];
-            }
+                if (response.ok) teams = await response.json();
+                else teams = [];
+            } catch (error) { teams = []; }
         }
 
         async function loadEvents() {
             try {
                 const response = await fetch(`${API_BASE}/events`);
-                if (response.ok) {
-                    events = await response.json();
-                    console.log('Events loaded:', events.length);
-                } else {
-                    events = [];
-                }
-            } catch (error) {
-                console.error('Error loading events:', error);
-                events = [];
-            }
+                if (response.ok) events = await response.json();
+                else events = [];
+            } catch (error) { events = []; }
         }
 
         async function loadMatches() {
             try {
                 const response = await fetch(`${API_BASE}/matches`);
-                if (response.ok) {
-                    matches = await response.json();
-                    console.log('Matches loaded:', matches.length);
-                } else {
-                    matches = [];
-                }
-            } catch (error) {
-                console.error('Error loading matches:', error);
-                matches = [];
-            }
+                if (response.ok) matches = await response.json();
+                else matches = [];
+            } catch (error) { matches = []; }
         }
 
         async function loadScorers() {
             try {
                 const response = await fetch(`${API_BASE}/scorers`);
-                if (response.ok) {
-                    scorers = await response.json();
-                    console.log('Scorers loaded:', scorers.length);
-                } else {
-                    scorers = [];
-                }
-            } catch (error) {
-                console.error('Error loading scorers:', error);
-                scorers = [];
-            }
+                if (response.ok) scorers = await response.json();
+                else scorers = [];
+            } catch (error) { scorers = []; }
         }
 
         async function loadSponsors() {
             try {
                 const response = await fetch(`${API_BASE}/sponsors`);
-                if (response.ok) {
-                    sponsors = await response.json();
-                    console.log('Sponsors loaded:', sponsors.length);
-                } else {
-                    sponsors = [];
-                }
-            } catch (error) {
-                console.error('Error loading sponsors:', error);
-                sponsors = [];
-            }
+                if (response.ok) sponsors = await response.json();
+                else sponsors = [];
+            } catch (error) { sponsors = []; }
         }
 
         // ============== TEAM FUNCTIONS ==============
@@ -1644,263 +1189,108 @@
         function editTeam(id) {
             const team = teams.find(t => t.id == id);
             if (!team) return;
-            
             document.getElementById('teamId').value = team.id;
             document.getElementById('teamName').value = team.name;
             document.getElementById('teamAbbr').value = team.abbreviation || '';
             document.getElementById('teamColor').value = team.color || '#00c853';
-            
-            if (team.logo) {
-                document.getElementById('logoPreview').src = team.logo;
-                document.getElementById('logoPreview').style.display = 'block';
-            }
-            
+            if (team.logo) { document.getElementById('logoPreview').src = team.logo; document.getElementById('logoPreview').style.display = 'block'; }
             document.getElementById('teamModal').style.display = 'block';
         }
 
         async function saveTeam(event) {
             event.preventDefault();
-            
-            const teamData = {
-                name: document.getElementById('teamName').value,
-                abbreviation: document.getElementById('teamAbbr').value,
-                color: document.getElementById('teamColor').value
-            };
-            
+            const teamData = { name: document.getElementById('teamName').value, abbreviation: document.getElementById('teamAbbr').value, color: document.getElementById('teamColor').value };
             const teamId = document.getElementById('teamId').value;
-            
             try {
-                const response = await fetch(`${API_BASE}/teams${teamId ? `/${teamId}` : ''}`, {
-                    method: teamId ? 'PUT' : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(teamData)
-                });
-                
+                const response = await fetch(`${API_BASE}/teams${teamId ? `/${teamId}` : ''}`, { method: teamId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(teamData) });
                 if (response.ok) {
-                    const savedTeam = await response.json();
-                    console.log('Team saved:', savedTeam);
-                    
                     closeModal('teamModal');
                     await loadTeams();
                     await loadTeamsSection();
                     showAlert(`Team ${teamId ? 'updated' : 'created'} successfully!`, 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to save team'), 'error');
-                }
-            } catch (error) {
-                console.error('Error saving team:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                } else showAlert('Error saving team', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         async function deleteTeam(id) {
-            if (!confirm('Are you sure you want to delete this team?')) return;
-            
+            if (!confirm('Delete this team?')) return;
             try {
-                const response = await fetch(`${API_BASE}/teams/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    await loadTeams();
-                    await loadTeamsSection();
-                    showAlert('Team deleted successfully!', 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to delete team'), 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting team:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/teams/${id}`, { method: 'DELETE' });
+                if (response.ok) { await loadTeams(); await loadTeamsSection(); showAlert('Team deleted!', 'success'); }
+                else showAlert('Error deleting team', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         // ============== EVENT FUNCTIONS ==============
         async function openEventModal() {
             await loadTeams();
-            
             document.getElementById('eventId').value = '';
             document.getElementById('eventName').value = '';
             document.getElementById('eventType').value = 'league';
             document.getElementById('eventVenue').value = '';
             document.getElementById('eventStartTime').value = '';
-            
             const teamSelection = document.getElementById('teamSelection');
-            teamSelection.innerHTML = teams.map(team => `
-                <div class="team-checkbox">
-                    <input type="checkbox" value="${team.id}" id="event-team-${team.id}">
-                    <div class="team-logo-small" style="background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div>
-                    <label for="event-team-${team.id}">${team.name}</label>
-                </div>
-            `).join('');
-            
+            teamSelection.innerHTML = teams.map(team => `<div class="team-checkbox"><input type="checkbox" value="${team.id}" id="event-team-${team.id}"><div class="team-logo-small" style="background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div><label for="event-team-${team.id}">${team.name}</label></div>`).join('');
             document.getElementById('eventModal').style.display = 'block';
         }
 
         async function saveEvent(event) {
             event.preventDefault();
-            
+            const selectedTeams = Array.from(document.querySelectorAll('#teamSelection input:checked')).map(cb => parseInt(cb.value));
+            if (selectedTeams.length < 2) { showAlert('Select at least 2 teams', 'error'); return; }
+            const eventData = { name: document.getElementById('eventName').value, type: document.getElementById('eventType').value, venue: document.getElementById('eventVenue').value || null, start_time: document.getElementById('eventStartTime').value || null, teams: selectedTeams };
             const eventId = document.getElementById('eventId').value;
-            const selectedTeams = Array.from(document.querySelectorAll('#teamSelection input:checked'))
-                .map(cb => parseInt(cb.value));
-            
-            if (selectedTeams.length < 2) {
-                showAlert('Please select at least 2 teams', 'error');
-                return;
-            }
-            
-            const eventData = {
-                name: document.getElementById('eventName').value,
-                type: document.getElementById('eventType').value,
-                venue: document.getElementById('eventVenue').value || null,
-                start_time: document.getElementById('eventStartTime').value || null,
-                teams: selectedTeams
-            };
-            
             try {
-                const response = await fetch(`${API_BASE}/events${eventId ? `/${eventId}` : ''}`, {
-                    method: eventId ? 'PUT' : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(eventData)
-                });
-                
-                if (response.ok) {
-                    const savedEvent = await response.json();
-                    console.log('Event saved:', savedEvent);
-                    
-                    closeModal('eventModal');
-                    await loadEvents();
-                    await loadEventsSection();
-                    showAlert(`Event ${eventId ? 'updated' : 'created'} successfully!`, 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to save event'), 'error');
-                }
-            } catch (error) {
-                console.error('Error saving event:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/events${eventId ? `/${eventId}` : ''}`, { method: eventId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventData) });
+                if (response.ok) { closeModal('eventModal'); await loadEvents(); await loadEventsSection(); showAlert(`Event ${eventId ? 'updated' : 'created'}!`, 'success'); }
+                else showAlert('Error saving event', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
-        async function editEvent(id) {
+        function editEvent(id) {
             const event = events.find(e => e.id == id);
             if (!event) return;
-            
             document.getElementById('eventId').value = event.id;
             document.getElementById('eventName').value = event.name;
             document.getElementById('eventType').value = event.type;
             document.getElementById('eventVenue').value = event.venue || '';
-            
-            if (event.start_time) {
-                const date = new Date(event.start_time);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                document.getElementById('eventStartTime').value = `${year}-${month}-${day}T${hours}:${minutes}`;
-            }
-            
-            await loadTeams();
-            const teamSelection = document.getElementById('teamSelection');
-            teamSelection.innerHTML = teams.map(team => `
-                <div class="team-checkbox">
-                    <input type="checkbox" value="${team.id}" 
-                           id="event-team-${team.id}"
-                           ${event.teams?.includes(team.id) ? 'checked' : ''}>
-                    <div class="team-logo-small" style="background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div>
-                    <label for="event-team-${team.id}">${team.name}</label>
-                </div>
-            `).join('');
-            
+            if (event.start_time) { const d = new Date(event.start_time); document.getElementById('eventStartTime').value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+            loadTeams().then(() => { const sel = document.getElementById('teamSelection'); sel.innerHTML = teams.map(team => `<div class="team-checkbox"><input type="checkbox" value="${team.id}" id="event-team-${team.id}" ${event.teams?.includes(team.id) ? 'checked' : ''}><div class="team-logo-small" style="background: ${team.color || '#00c853'};">${team.abbreviation || team.name.substring(0,2)}</div><label for="event-team-${team.id}">${team.name}</label></div>`).join(''); });
             document.getElementById('eventModal').style.display = 'block';
         }
 
         async function deleteEvent(id) {
-            if (!confirm('Delete this event and ALL its matches? This cannot be undone!')) return;
-            
+            if (!confirm('Delete this event and ALL its matches?')) return;
             try {
-                const response = await fetch(`${API_BASE}/events/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    await loadEvents();
-                    await loadEventsSection();
-                    showAlert('Event and all matches deleted successfully!', 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to delete event'), 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting event:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/events/${id}`, { method: 'DELETE' });
+                if (response.ok) { await loadEvents(); await loadEventsSection(); showAlert('Event deleted!', 'success'); }
+                else showAlert('Error deleting event', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         // ============== SCORE FUNCTIONS ==============
         async function openScoreModal(matchId) {
             const match = matches.find(m => m.id == matchId);
             if (!match) return;
-            
             const homeTeam = teams.find(t => t.id == match.team1_id);
             const awayTeam = teams.find(t => t.id == match.team2_id);
-            
             document.getElementById('matchId').value = matchId;
             document.getElementById('team1Score').value = match.team1_score || 0;
             document.getElementById('team2Score').value = match.team2_score || 0;
             document.getElementById('matchStatus').value = match.status || 'scheduled';
-            
-            document.getElementById('matchTeamsDisplay').innerHTML = `
-                <div style="display: flex; justify-content: space-around; align-items: center;">
-                    <div>
-                        <div class="team-logo-small" style="width: 50px; height: 50px; margin: 0 auto 10px; background: ${homeTeam?.color || '#00c853'};">${homeTeam?.abbreviation || 'T1'}</div>
-                        <strong>${homeTeam?.name || 'Home'}</strong>
-                    </div>
-                    <div style="font-size: 2rem;">VS</div>
-                    <div>
-                        <div class="team-logo-small" style="width: 50px; height: 50px; margin: 0 auto 10px; background: ${awayTeam?.color || '#2962ff'};">${awayTeam?.abbreviation || 'T2'}</div>
-                        <strong>${awayTeam?.name || 'Away'}</strong>
-                    </div>
-                </div>
-            `;
-            
+            document.getElementById('matchTeamsDisplay').innerHTML = `<div style="display: flex; justify-content: space-around;"><div><div class="team-logo-small" style="width:50px;height:50px;background:${homeTeam?.color || '#00c853'};">${homeTeam?.abbreviation || 'T1'}</div><strong>${homeTeam?.name || 'Home'}</strong></div><div style="font-size:2rem;">VS</div><div><div class="team-logo-small" style="width:50px;height:50px;background:${awayTeam?.color || '#2962ff'};">${awayTeam?.abbreviation || 'T2'}</div><strong>${awayTeam?.name || 'Away'}</strong></div></div>`;
             document.getElementById('scoreModal').style.display = 'block';
         }
 
         async function updateScore(event) {
             event.preventDefault();
-            
             const matchId = document.getElementById('matchId').value;
-            const scoreData = {
-                team1_score: parseInt(document.getElementById('team1Score').value),
-                team2_score: parseInt(document.getElementById('team2Score').value),
-                status: document.getElementById('matchStatus').value
-            };
-            
+            const scoreData = { team1_score: parseInt(document.getElementById('team1Score').value), team2_score: parseInt(document.getElementById('team2Score').value), status: document.getElementById('matchStatus').value };
             try {
-                const response = await fetch(`${API_BASE}/matches/${matchId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(scoreData)
-                });
-                
-                if (response.ok) {
-                    closeModal('scoreModal');
-                    await loadMatches();
-                    await loadResultsSection();
-                    showAlert('Score updated successfully!', 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to update score'), 'error');
-                }
-            } catch (error) {
-                console.error('Error updating score:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/matches/${matchId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(scoreData) });
+                if (response.ok) { closeModal('scoreModal'); await loadMatches(); await loadResultsSection(); showAlert('Score updated!', 'success'); }
+                else showAlert('Error updating score', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         // ============== SCORER FUNCTIONS ==============
@@ -1910,87 +1300,43 @@
             document.getElementById('goals').value = 0;
             document.getElementById('assists').value = 0;
             document.getElementById('matches').value = 0;
-            
             const teamSelect = document.getElementById('playerTeam');
-            teamSelect.innerHTML = '<option value="">Select Team</option>' + 
-                teams.map(team => `<option value="${team.id}">${team.name}</option>`).join('');
-            
+            teamSelect.innerHTML = '<option value="">Select Team</option>' + teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
             document.getElementById('scorerModal').style.display = 'block';
         }
 
         function editScorer(id) {
             const scorer = scorers.find(s => s.id == id);
             if (!scorer) return;
-            
             document.getElementById('scorerId').value = scorer.id;
             document.getElementById('playerName').value = scorer.player;
             document.getElementById('goals').value = scorer.goals || 0;
             document.getElementById('assists').value = scorer.assists || 0;
             document.getElementById('matches').value = scorer.matches || 0;
-            
             const teamSelect = document.getElementById('playerTeam');
-            teamSelect.innerHTML = '<option value="">Select Team</option>' + 
-                teams.map(team => `<option value="${team.id}">${team.name}</option>`).join('');
+            teamSelect.innerHTML = '<option value="">Select Team</option>' + teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
             teamSelect.value = scorer.team_id;
-            
             document.getElementById('scorerModal').style.display = 'block';
         }
 
         async function saveScorer(event) {
             event.preventDefault();
-            
             const scorerId = document.getElementById('scorerId').value;
-            const scorerData = {
-                player: document.getElementById('playerName').value,
-                team_id: parseInt(document.getElementById('playerTeam').value),
-                goals: parseInt(document.getElementById('goals').value) || 0,
-                assists: parseInt(document.getElementById('assists').value) || 0,
-                matches: parseInt(document.getElementById('matches').value) || 0
-            };
-            
+            const scorerData = { player: document.getElementById('playerName').value, team_id: parseInt(document.getElementById('playerTeam').value), goals: parseInt(document.getElementById('goals').value) || 0, assists: parseInt(document.getElementById('assists').value) || 0, matches: parseInt(document.getElementById('matches').value) || 0 };
             try {
-                const response = await fetch(`${API_BASE}/scorers${scorerId ? `/${scorerId}` : ''}`, {
-                    method: scorerId ? 'PUT' : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(scorerData)
-                });
-                
-                if (response.ok) {
-                    closeModal('scorerModal');
-                    await loadScorers();
-                    await loadScorersSection();
-                    showAlert(`Scorer ${scorerId ? 'updated' : 'created'} successfully!`, 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to save scorer'), 'error');
-                }
-            } catch (error) {
-                console.error('Error saving scorer:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/scorers${scorerId ? `/${scorerId}` : ''}`, { method: scorerId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(scorerData) });
+                if (response.ok) { closeModal('scorerModal'); await loadScorers(); await loadScorersSection(); showAlert('Scorer saved!', 'success'); }
+                else showAlert('Error saving scorer', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         async function deleteScorer(id) {
-            if (!confirm('Are you sure you want to delete this scorer?')) return;
-            
+            if (!confirm('Delete this scorer?')) return;
             try {
-                const response = await fetch(`${API_BASE}/scorers/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    await loadScorers();
-                    await loadScorersSection();
-                    showAlert('Scorer deleted successfully!', 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to delete scorer'), 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting scorer:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/scorers/${id}`, { method: 'DELETE' });
+                if (response.ok) { await loadScorers(); await loadScorersSection(); showAlert('Scorer deleted!', 'success'); }
+                else showAlert('Error deleting scorer', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         // ============== SPONSOR FUNCTIONS ==============
@@ -2006,144 +1352,41 @@
         function editSponsor(id) {
             const sponsor = sponsors.find(s => s.id == id);
             if (!sponsor) return;
-            
             document.getElementById('sponsorId').value = sponsor.id;
             document.getElementById('sponsorName').value = sponsor.name;
             document.getElementById('sponsorDesc').value = sponsor.description || '';
             document.getElementById('sponsorContact').value = sponsor.contact || '';
-            
-            if (sponsor.logo) {
-                document.getElementById('sponsorLogoPreview').src = sponsor.logo;
-                document.getElementById('sponsorLogoPreview').style.display = 'block';
-            }
-            
+            if (sponsor.logo) { document.getElementById('sponsorLogoPreview').src = sponsor.logo; document.getElementById('sponsorLogoPreview').style.display = 'block'; }
             document.getElementById('sponsorModal').style.display = 'block';
         }
 
         async function saveSponsor(event) {
             event.preventDefault();
-            
             const sponsorId = document.getElementById('sponsorId').value;
-            const sponsorData = {
-                name: document.getElementById('sponsorName').value,
-                description: document.getElementById('sponsorDesc').value,
-                contact: document.getElementById('sponsorContact').value
-            };
-            
+            const sponsorData = { name: document.getElementById('sponsorName').value, description: document.getElementById('sponsorDesc').value, contact: document.getElementById('sponsorContact').value };
             try {
-                const response = await fetch(`${API_BASE}/sponsors${sponsorId ? `/${sponsorId}` : ''}`, {
-                    method: sponsorId ? 'PUT' : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sponsorData)
-                });
-                
-                if (response.ok) {
-                    closeModal('sponsorModal');
-                    await loadSponsors();
-                    await loadSponsorsSection();
-                    showAlert(`Sponsor ${sponsorId ? 'updated' : 'created'} successfully!`, 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to save sponsor'), 'error');
-                }
-            } catch (error) {
-                console.error('Error saving sponsor:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/sponsors${sponsorId ? `/${sponsorId}` : ''}`, { method: sponsorId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sponsorData) });
+                if (response.ok) { closeModal('sponsorModal'); await loadSponsors(); await loadSponsorsSection(); showAlert('Sponsor saved!', 'success'); }
+                else showAlert('Error saving sponsor', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         async function deleteSponsor(id) {
-            if (!confirm('Are you sure you want to delete this sponsor?')) return;
-            
+            if (!confirm('Delete this sponsor?')) return;
             try {
-                const response = await fetch(`${API_BASE}/sponsors/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    await loadSponsors();
-                    await loadSponsorsSection();
-                    showAlert('Sponsor deleted successfully!', 'success');
-                } else {
-                    const error = await response.json();
-                    showAlert('Error: ' + (error.error || 'Failed to delete sponsor'), 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting sponsor:', error);
-                showAlert('Error: ' + error.message, 'error');
-            }
+                const response = await fetch(`${API_BASE}/sponsors/${id}`, { method: 'DELETE' });
+                if (response.ok) { await loadSponsors(); await loadSponsorsSection(); showAlert('Sponsor deleted!', 'success'); }
+                else showAlert('Error deleting sponsor', 'error');
+            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
         }
 
         // ============== HELPER FUNCTIONS ==============
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function previewLogo(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('logoPreview').src = e.target.result;
-                    document.getElementById('logoPreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function previewSponsorLogo(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('sponsorLogoPreview').src = e.target.result;
-                    document.getElementById('sponsorLogoPreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function showAlert(message, type) {
-            const alert = document.createElement('div');
-            alert.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 25px;
-                border-radius: 8px;
-                color: white;
-                background: ${type === 'success' ? '#00c853' : type === 'error' ? '#ff3d00' : '#ffa000'};
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            `;
-            alert.textContent = message;
-            document.body.appendChild(alert);
-            
-            setTimeout(() => {
-                alert.style.opacity = '0';
-                alert.style.transition = 'opacity 0.3s';
-                setTimeout(() => alert.remove(), 300);
-            }, 3000);
-        }
-
-        // Add slideIn animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        };
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        function previewLogo(event) { const f=event.target.files[0]; if(f){const r=new FileReader(); r.onload=e=>{document.getElementById('logoPreview').src=e.target.result; document.getElementById('logoPreview').style.display='block';}; r.readAsDataURL(f);} }
+        function previewSponsorLogo(event) { const f=event.target.files[0]; if(f){const r=new FileReader(); r.onload=e=>{document.getElementById('sponsorLogoPreview').src=e.target.result; document.getElementById('sponsorLogoPreview').style.display='block';}; r.readAsDataURL(f);} }
+        function showAlert(m,t){const a=document.createElement('div'); a.style.cssText=`position:fixed;top:20px;right:20px;padding:15px 25px;border-radius:8px;color:white;background:${t==='success'?'#00c853':'#ff3d00'};z-index:10000;animation:slideIn 0.3s ease;`; a.textContent=m; document.body.appendChild(a); setTimeout(()=>{a.style.opacity='0'; setTimeout(()=>a.remove(),300);},3000); }
+        const style = document.createElement('style'); style.textContent = `@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}`; document.head.appendChild(style);
+        window.onclick = function(e) { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; };
     </script>
 </body>
 </html>
