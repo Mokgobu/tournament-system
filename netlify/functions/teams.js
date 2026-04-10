@@ -1,115 +1,82 @@
-import { neon } from '@netlify/neon';
+const { neon } = require('@netlify/neon');
 
-export default async (req) => {
+exports.handler = async function(event, context) {
   const headers = {
+    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Content-Type': 'application/json'
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
   };
 
   // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers });
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers };
   }
 
   try {
-    // Check if database URL exists
     const databaseUrl = process.env.NETLIFY_DATABASE_URL;
     if (!databaseUrl) {
-      console.error('NETLIFY_DATABASE_URL environment variable is not set');
-      return new Response(
-        JSON.stringify({ error: 'Database configuration error' }),
-        { status: 500, headers }
-      );
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Database configuration error' })
+      };
     }
 
     const sql = neon(databaseUrl);
-    const url = new URL(req.url);
-    const pathParts = url.pathname.split('/');
+    
+    // Parse the path to get the ID
+    const pathParts = event.path.split('/');
     const id = pathParts[pathParts.length - 1];
-
-    // Check if this is a request for a specific team (has an ID)
     const hasId = id && !isNaN(parseInt(id)) && id !== 'teams';
 
-    // Test database connection
-    try {
-      await sql`SELECT 1`;
-    } catch (dbError) {
-      console.error('Database connection failed:', dbError);
-      return new Response(
-        JSON.stringify({ error: 'Database connection failed' }),
-        { status: 500, headers }
-      );
-    }
-
-    // GET all teams
-    if (req.method === 'GET' && !hasId) {
-      console.log('Fetching all teams');
+    // ========== GET all teams ==========
+    if (event.httpMethod === 'GET' && !hasId) {
       const teams = await sql`SELECT * FROM teams ORDER BY name`;
-      return new Response(JSON.stringify(teams), { headers });
+      return { statusCode: 200, headers, body: JSON.stringify(teams) };
     }
 
-    // GET single team
-    if (req.method === 'GET' && hasId) {
-      console.log('Fetching team:', id);
+    // ========== GET single team ==========
+    if (event.httpMethod === 'GET' && hasId) {
       const [team] = await sql`SELECT * FROM teams WHERE id = ${id}`;
       if (!team) {
-        return new Response(JSON.stringify({ error: 'Team not found' }), { 
-          status: 404, 
-          headers 
-        });
+        return { statusCode: 404, headers, body: JSON.stringify({ error: 'Team not found' }) };
       }
-      return new Response(JSON.stringify(team), { headers });
+      return { statusCode: 200, headers, body: JSON.stringify(team) };
     }
 
-    // POST new team
-    if (req.method === 'POST') {
-      console.log('Creating new team');
-      const { name, abbreviation, color } = await req.json();
+    // ========== POST create new team ==========
+    if (event.httpMethod === 'POST') {
+      const { name, abbreviation, color } = JSON.parse(event.body);
       
       if (!name) {
-        return new Response(
-          JSON.stringify({ error: 'Team name is required' }),
-          { status: 400, headers }
-        );
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Team name is required' })
+        };
       }
       
-      try {
-        const [newTeam] = await sql`
-          INSERT INTO teams (name, abbreviation, color)
-          VALUES (${name}, ${abbreviation || null}, ${color || '#00c853'})
-          RETURNING *
-        `;
-        
-        console.log('Team created:', newTeam);
-        return new Response(JSON.stringify(newTeam), { 
-          status: 201, 
-          headers 
-        });
-      } catch (insertError) {
-        if (insertError.message.includes('duplicate key')) {
-          return new Response(
-            JSON.stringify({ error: `Team "${name}" already exists` }),
-            { status: 409, headers }
-          );
-        }
-        throw insertError;
-      }
+      const [newTeam] = await sql`
+        INSERT INTO teams (name, abbreviation, color)
+        VALUES (${name}, ${abbreviation || null}, ${color || '#00c853'})
+        RETURNING *
+      `;
+      
+      return { statusCode: 201, headers, body: JSON.stringify(newTeam) };
     }
 
-    // PUT (edit) team - FIXED
-    if (req.method === 'PUT' && hasId) {
-      console.log('Updating team:', id);
-      const { name, abbreviation, color } = await req.json();
+    // ========== PUT update team ==========
+    if (event.httpMethod === 'PUT' && hasId) {
+      const { name, abbreviation, color } = JSON.parse(event.body);
       
       if (!name) {
-        return new Response(
-          JSON.stringify({ error: 'Team name is required' }),
-          { status: 400, headers }
-        );
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Team name is required' })
+        };
       }
-
+      
       const [updatedTeam] = await sql`
         UPDATE teams 
         SET name = ${name},
@@ -120,20 +87,14 @@ export default async (req) => {
       `;
       
       if (!updatedTeam) {
-        return new Response(JSON.stringify({ error: 'Team not found' }), { 
-          status: 404, 
-          headers 
-        });
+        return { statusCode: 404, headers, body: JSON.stringify({ error: 'Team not found' }) };
       }
       
-      console.log('Team updated:', updatedTeam);
-      return new Response(JSON.stringify(updatedTeam), { headers });
+      return { statusCode: 200, headers, body: JSON.stringify(updatedTeam) };
     }
 
-    // DELETE team -
-    if (req.method === 'DELETE' && hasId) {
-      console.log('Deleting team:', id);
-      
+    // ========== DELETE team ==========
+    if (event.httpMethod === 'DELETE' && hasId) {
       // Check if team is used in any matches
       const [matchCheck] = await sql`
         SELECT COUNT(*) as count FROM matches 
@@ -141,33 +102,20 @@ export default async (req) => {
       `;
       
       if (parseInt(matchCheck.count) > 0) {
-        return new Response(
-          JSON.stringify({ 
+        return {
+          statusCode: 409,
+          headers,
+          body: JSON.stringify({ 
             error: 'Cannot delete team because it has existing matches. Delete the matches first.' 
-          }),
-          { status: 409, headers }
-        );
+          })
+        };
       }
 
-      // Check if team is in any standings
-      const [standingCheck] = await sql`
-        SELECT COUNT(*) as count FROM standings WHERE team_id = ${id}
-      `;
-      
-      if (parseInt(standingCheck.count) > 0) {
-        // Delete standings entries first
-        await sql`DELETE FROM standings WHERE team_id = ${id}`;
-      }
+      // Delete standings entries for this team
+      await sql`DELETE FROM standings WHERE team_id = ${id}`;
 
-      // Check if team is in any scorers
-      const [scorerCheck] = await sql`
-        SELECT COUNT(*) as count FROM scorers WHERE team_id = ${id}
-      `;
-      
-      if (parseInt(scorerCheck.count) > 0) {
-        // Delete or update scorers (setting team_id to NULL)
-        await sql`UPDATE scorers SET team_id = NULL WHERE team_id = ${id}`;
-      }
+      // Delete or update scorers (set team_id to NULL)
+      await sql`UPDATE scorers SET team_id = NULL WHERE team_id = ${id}`;
 
       // Finally delete the team
       const [deletedTeam] = await sql`
@@ -175,48 +123,34 @@ export default async (req) => {
       `;
       
       if (!deletedTeam) {
-        return new Response(JSON.stringify({ error: 'Team not found' }), { 
-          status: 404, 
-          headers 
-        });
+        return { statusCode: 404, headers, body: JSON.stringify({ error: 'Team not found' }) };
       }
       
-      console.log('Team deleted:', deletedTeam);
-      return new Response(JSON.stringify({ 
-        message: 'Team deleted successfully',
-        team: deletedTeam 
-      }), { headers });
+      return { 
+        statusCode: 200, 
+        headers, 
+        body: JSON.stringify({ message: 'Team deleted successfully', team: deletedTeam }) 
+      };
     }
-    
-    return new Response(JSON.stringify({ error: 'Not found' }), { 
-      status: 404, 
-      headers 
-    });
+
+    return { statusCode: 404, headers, body: JSON.stringify({ error: 'Not found' }) };
     
   } catch (error) {
-    console.error('Function error:', error);
+    console.error('Teams function error:', error);
     
-    // Handle table not exists error
-    if (error.message && error.message.includes('relation') && error.message.includes('does not exist')) {
-      return new Response(
-        JSON.stringify({ 
-          error: 'Database tables not set up. Please visit /api/setup-db first.',
-          hint: 'Run the setup-db function to create tables'
-        }),
-        { status: 500, headers }
-      );
+    // Handle duplicate key error
+    if (error.message && error.message.includes('duplicate key')) {
+      return {
+        statusCode: 409,
+        headers,
+        body: JSON.stringify({ error: 'A team with this name already exists' })
+      };
     }
     
-    return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        stack: error.stack 
-      }),
-      { status: 500, headers }
-    );
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: error.message })
+    };
   }
-};
-
-export const config = {
-  path: "/api/teams"
 };
