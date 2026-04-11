@@ -639,9 +639,11 @@
                 display: flex;
             }
         }
+
     </style>
 </head>
 <body>
+    <!-- [YOUR EXISTING HTML STRUCTURE STAYS EXACTLY THE SAME] -->
     <header>
         <div class="container header-content">
             <div class="logo" id="logo" data-section="dashboard">
@@ -651,11 +653,7 @@
                     <div class="logo-subtitle">Professional Tournament Management</div>
                 </div>
             </div>
-            
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
-            </button>
-            
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
             <ul class="nav-menu" id="navMenu">
                 <li><a class="nav-link active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a class="nav-link" data-section="fixtures"><i class="fas fa-calendar-alt"></i> Fixtures</a></li>
@@ -668,6 +666,7 @@
     </header>
     
     <main class="container">
+        <!-- Dashboard Section -->
         <section id="dashboard" class="section active">
             <div class="hero">
                 <h1>TournamentPro Management System</h1>
@@ -677,147 +676,36 @@
                     <button class="btn" data-section="standings" style="background: var(--tournament-blue);">View Standings</button>
                 </div>
             </div>
-            
             <div class="dashboard-stats">
-                <div class="stat-card" data-section="fixtures">
-                    <div class="stat-value" id="activeTournaments">0</div>
-                    <div class="stat-label">Active Tournaments</div>
-                </div>
-                <div class="stat-card blue" data-section="fixtures">
-                    <div class="stat-value" id="totalTeams">0</div>
-                    <div class="stat-label">Total Teams</div>
-                </div>
-                <div class="stat-card purple" data-section="results">
-                    <div class="stat-value" id="totalMatches">0</div>
-                    <div class="stat-label">Total Matches</div>
-                </div>
-                <div class="stat-card red" data-section="results">
-                    <div class="stat-value" id="liveMatches">0</div>
-                    <div class="stat-label">Live Matches</div>
-                </div>
+                <div class="stat-card" data-section="fixtures"><div class="stat-value" id="activeTournaments">0</div><div class="stat-label">Active Tournaments</div></div>
+                <div class="stat-card blue" data-section="fixtures"><div class="stat-value" id="totalTeams">0</div><div class="stat-label">Total Teams</div></div>
+                <div class="stat-card purple" data-section="results"><div class="stat-value" id="totalMatches">0</div><div class="stat-label">Total Matches</div></div>
+                <div class="stat-card red" data-section="results"><div class="stat-value" id="liveMatches">0</div><div class="stat-label">Live Matches</div></div>
             </div>
-            
             <h2 class="section-title"><i class="fas fa-cogs"></i> System Features</h2>
             <div class="feature-cards">
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
-                    <h3 class="card-title">Tournament Scheduling</h3>
-                    <p>Create and manage tournament schedules with automatic fixture generation.</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3 class="card-title">Live Standings</h3>
-                    <p>Real-time standings updated automatically as match results are entered.</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
-                    <h3 class="card-title">Advanced Statistics</h3>
-                    <p>Comprehensive player and team statistics with performance analysis.</p>
-                </div>
+                <div class="card"><div class="card-icon"><i class="fas fa-calendar-alt"></i></div><h3 class="card-title">Tournament Scheduling</h3><p>Create and manage tournament schedules with automatic fixture generation.</p></div>
+                <div class="card"><div class="card-icon"><i class="fas fa-chart-line"></i></div><h3 class="card-title">Live Standings</h3><p>Real-time standings updated automatically as match results are entered.</p></div>
+                <div class="card"><div class="card-icon"><i class="fas fa-chart-bar"></i></div><h3 class="card-title">Advanced Statistics</h3><p>Comprehensive player and team statistics with performance analysis.</p></div>
             </div>
-            
-            <div class="ad-section">
-                <div class="ad-banner" style="background: linear-gradient(135deg, var(--tournament-green), var(--tournament-blue)); padding: 2rem; border-radius: 12px; margin-top: 2rem;">
-                    <h3 style="color: white; margin-bottom: 0.5rem;">Official Sponsor</h3>
-                    <p style="color: rgba(255,255,255,0.9);">Partnering with industry leaders to deliver world-class tournament experiences</p>
-                    <p style="color: white; font-weight: 600; margin-top: 1rem;">Contact: tshepodesign2025@gmail.com</p>
-                </div>
-            </div>
+            <div class="ad-section"><div class="ad-banner" style="background: linear-gradient(135deg, var(--tournament-green), var(--tournament-blue)); padding: 2rem; border-radius: 12px; margin-top: 2rem;"><h3 style="color: white; margin-bottom: 0.5rem;">Official Sponsor</h3><p style="color: rgba(255,255,255,0.9);">Partnering with industry leaders to deliver world-class tournament experiences</p><p style="color: white; font-weight: 600; margin-top: 1rem;">Contact: tshepodesign2025@gmail.com</p></div></div>
         </section>
         
-        <section id="fixtures" class="section">
-            <h2 class="section-title"><i class="fas fa-calendar-alt"></i> Match Fixtures</h2>
-            <div class="match-list" id="fixturesList">
-                <div class="loading">
-                    <div class="spinner"></div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="results" class="section">
-            <h2 class="section-title"><i class="fas fa-futbol"></i> Match Results</h2>
-            <div class="match-list" id="resultsList">
-                <div class="loading">
-                    <div class="spinner"></div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="standings" class="section">
-            <h2 class="section-title"><i class="fas fa-table"></i> Tournament Standings</h2>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Pos</th>
-                            <th>Team</th>
-                            <th>P</th>
-                            <th>W</th>
-                            <th>D</th>
-                            <th>L</th>
-                            <th>GF</th>
-                            <th>GA</th>
-                            <th>GD</th>
-                            <th>Pts</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standingsBody">
-                        <tr>
-                            <td colspan="10" class="loading">
-                                <div class="spinner"></div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-        
-        <section id="top-scorers" class="section">
-            <h2 class="section-title"><i class="fas fa-star"></i> Top Scorers</h2>
-            <div class="scorer-list" id="scorersList">
-                <div class="loading">
-                    <div class="spinner"></div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="sponsors" class="section">
-            <h2 class="section-title"><i class="fas fa-handshake"></i> Official Sponsors</h2>
-            <p style="margin-bottom: 2rem; color: var(--text-secondary);">We proudly partner with industry leaders.</p>
-            <div class="ad-cards" id="sponsorsList">
-                <div class="loading">
-                    <div class="spinner"></div>
-                </div>
-            </div>
-        </section>
+        <section id="fixtures" class="section"><h2 class="section-title"><i class="fas fa-calendar-alt"></i> Match Fixtures</h2><div class="match-list" id="fixturesList"><div class="loading"><div class="spinner"></div></div></div></section>
+        <section id="results" class="section"><h2 class="section-title"><i class="fas fa-futbol"></i> Match Results</h2><div class="match-list" id="resultsList"><div class="loading"><div class="spinner"></div></div></div></section>
+        <section id="standings" class="section"><h2 class="section-title"><i class="fas fa-table"></i> Tournament Standings</h2><div class="table-container"><table><thead><tr><th>Pos</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody id="standingsBody"><tr><td colspan="10" class="loading"><div class="spinner"></div></td></tr></tbody></table></div></section>
+        <section id="top-scorers" class="section"><h2 class="section-title"><i class="fas fa-star"></i> Top Scorers</h2><div class="scorer-list" id="scorersList"><div class="loading"><div class="spinner"></div></div></div></section>
+        <section id="sponsors" class="section"><h2 class="section-title"><i class="fas fa-handshake"></i> Official Sponsors</h2><p style="margin-bottom: 2rem; color: var(--text-secondary);">We proudly partner with industry leaders.</p><div class="ad-cards" id="sponsorsList"><div class="loading"><div class="spinner"></div></div></div></section>
     </main>
     
     <footer>
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--tournament-green); margin-bottom: 0.5rem;">TournamentPro</div>
-                    <p>Professional tournament organization since 2023.</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3 style="margin-bottom: 1rem; color: var(--tournament-green);">Contact</h3>
-                    <p>info@tournamentpro.com<br>+1 (555) 123-4567</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3 style="margin-bottom: 1rem; color: var(--tournament-green);">Sponsors</h3>
-                    <div class="sponsor-logos" id="footerSponsors" style="display: flex; gap: 1rem;">
-                        <div class="loading">
-                            <div class="spinner" style="width: 30px; height: 30px;"></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="footer-section"><div style="font-size: 1.8rem; font-weight: 700; color: var(--tournament-green); margin-bottom: 0.5rem;">TournamentPro</div><p>Professional tournament organization since 2023.</p></div>
+                <div class="footer-section"><h3 style="margin-bottom: 1rem; color: var(--tournament-green);">Contact</h3><p>info@tournamentpro.com<br>+1 (555) 123-4567</p></div>
+                <div class="footer-section"><h3 style="margin-bottom: 1rem; color: var(--tournament-green);">Sponsors</h3><div class="sponsor-logos" id="footerSponsors" style="display: flex; gap: 1rem;"><div class="loading"><div class="spinner" style="width: 30px; height: 30px;"></div></div></div></div>
             </div>
-            
-            <div class="copyright">
-                &copy; 2024 TournamentPro Management System | <span id="currentYear"></span>
-            </div>
+            <div class="copyright">&copy; 2024 TournamentPro Management System | <span id="currentYear"></span></div>
         </div>
     </footer>
 
@@ -839,22 +727,15 @@
 
         function initApplication() {
             console.log('Initializing application...');
-            
             const yearElement = document.getElementById('currentYear');
-            if (yearElement) {
-                yearElement.textContent = new Date().getFullYear();
-            }
-            
+            if (yearElement) yearElement.textContent = new Date().getFullYear();
             setupNavigation();
             loadAllData();
         }
 
         function setupNavigation() {
-            console.log('Setting up navigation...');
-            
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const navMenu = document.getElementById('navMenu');
-            
             if (mobileMenuBtn) {
                 mobileMenuBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -869,31 +750,15 @@
             const logo = document.getElementById('logo');
             
             function switchSection(targetSection) {
-                console.log('Switching to section:', targetSection);
-                
                 if (!targetSection) return;
-                
                 navLinks.forEach(link => {
-                    if (link.getAttribute('data-section') === targetSection) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
+                    if (link.getAttribute('data-section') === targetSection) link.classList.add('active');
+                    else link.classList.remove('active');
                 });
-                
-                sections.forEach(section => {
-                    section.classList.remove('active');
-                });
-                
+                sections.forEach(section => section.classList.remove('active'));
                 const targetElement = document.getElementById(targetSection);
-                if (targetElement) {
-                    targetElement.classList.add('active');
-                }
-                
-                if (navMenu) {
-                    navMenu.classList.remove('active');
-                }
-                
+                if (targetElement) targetElement.classList.add('active');
+                if (navMenu) navMenu.classList.remove('active');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             
@@ -904,7 +769,6 @@
                     if (targetSection) switchSection(targetSection);
                 });
             });
-            
             statCards.forEach(card => {
                 card.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -912,7 +776,6 @@
                     if (targetSection) switchSection(targetSection);
                 });
             });
-            
             actionButtons.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -920,7 +783,6 @@
                     if (targetSection) switchSection(targetSection);
                 });
             });
-            
             if (logo) {
                 logo.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -930,426 +792,93 @@
         }
 
         async function loadAllData() {
-    try {
-        await loadTeams();
-        await loadEvents();
-        await loadMatches();
-        await loadScorers();
-        await loadSponsors();
-        
-        updateDashboardStats();
-        loadFixtures();
-        loadResults();
-        loadStandings();
-        // displayScorers and displaySponsors are called inside loadScorers/loadSponsors
-        
-        console.log('All data loaded successfully');
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
-}
+            try {
+                await loadTeams();
+                await loadEvents();
+                await loadMatches();
+                await loadScorers();
+                await loadSponsors();
+                updateDashboardStats();
+                loadFixtures();
+                loadResults();
+                loadStandings();
+                console.log('All data loaded successfully');
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
 
         async function loadTeams() {
             try {
                 const response = await fetch(`${API_BASE}/teams`);
-                if (response.ok) {
-                    tournamentData.teams = await response.json();
-                    console.log('Teams loaded:', tournamentData.teams.length);
-                } else {
-                    tournamentData.teams = [];
-                }
-            } catch (error) {
-                console.error('Error loading teams:', error);
-                tournamentData.teams = [];
-            }
+                if (response.ok) tournamentData.teams = await response.json();
+                else tournamentData.teams = [];
+            } catch (error) { tournamentData.teams = []; }
         }
 
         async function loadEvents() {
             try {
                 const response = await fetch(`${API_BASE}/events`);
-                if (response.ok) {
-                    tournamentData.events = await response.json();
-                } else {
-                    tournamentData.events = [];
-                }
-            } catch (error) {
-                console.error('Error loading events:', error);
-                tournamentData.events = [];
-            }
+                if (response.ok) tournamentData.events = await response.json();
+                else tournamentData.events = [];
+            } catch (error) { tournamentData.events = []; }
         }
 
         async function loadMatches() {
             try {
                 const response = await fetch(`${API_BASE}/matches`);
-                if (response.ok) {
-                    tournamentData.matches = await response.json();
-                } else {
-                    tournamentData.matches = [];
-                }
-            } catch (error) {
-                console.error('Error loading matches:', error);
-                tournamentData.matches = [];
-            }
+                if (response.ok) tournamentData.matches = await response.json();
+                else tournamentData.matches = [];
+            } catch (error) { tournamentData.matches = []; }
         }
 
         async function loadScorers() {
-    try {
-        const response = await fetch(`${API_BASE}/scorers`);
-        if (response.ok) {
-            const data = await response.json();
-            tournamentData.scorers = data;
-            console.log('Scorers loaded:', data);
-            displayScorers(); // Call display function
-        } else {
-            console.warn('Failed to load scorers');
-            tournamentData.scorers = [];
-        }
-    } catch (error) {
-        console.error('Error loading scorers:', error);
-        tournamentData.scorers = [];
-    }
-}
-
-async function loadSponsors() {
-    try {
-        const response = await fetch(`${API_BASE}/sponsors`);
-        if (response.ok) {
-            const data = await response.json();
-            tournamentData.sponsors = data;
-            console.log('Sponsors loaded:', data);
-            displaySponsors(); // Call display function
-        } else {
-            console.warn('Failed to load sponsors');
-            tournamentData.sponsors = [];
-        }
-    } catch (error) {
-        console.error('Error loading sponsors:', error);
-        tournamentData.sponsors = [];
-    }
-}
-
-function displayScorers() {
-    const scorersList = document.getElementById('scorersList');
-    if (!scorersList) return;
-    
-    if (!tournamentData.scorers || tournamentData.scorers.length === 0) {
-        scorersList.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-star"></i>
-                <h3>No Scorers Yet</h3>
-                <p>Top scorers will appear here</p>
-            </div>
-        `;
-        return;
-    }
-    
-    scorersList.innerHTML = '';
-    
-    tournamentData.scorers.sort((a, b) => b.goals - a.goals).forEach((scorer, index) => {
-        const team = tournamentData.teams?.find(t => t.id == scorer.team_id);
-        
-        const scorerCard = document.createElement('div');
-        scorerCard.className = 'scorer-card';
-        
-        scorerCard.innerHTML = `
-            <div class="scorer-rank">${index + 1}</div>
-            <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
-                <div style="font-size: 2rem;">👤</div>
-                <div style="flex: 1;">
-                    <div style="font-weight: 600; font-size: 1.1rem;">${scorer.player}</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">${team?.name || 'Unknown'}</div>
-                </div>
-            </div>
-            <div style="display: flex; gap: 1.5rem;">
-                <div style="text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.goals}</div>
-                    <div style="font-size: 0.8rem;">Goals</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.assists || 0}</div>
-                    <div style="font-size: 0.8rem;">Assists</div>
-                </div>
-            </div>
-        `;
-        
-        scorersList.appendChild(scorerCard);
-    });
-}
-
-function displaySponsors() {
-    const sponsorsList = document.getElementById('sponsorsList');
-    if (!sponsorsList) return;
-    
-    if (!tournamentData.sponsors || tournamentData.sponsors.length === 0) {
-        sponsorsList.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-handshake"></i>
-                <h3>No Sponsors Yet</h3>
-                <p>Sponsors will appear here</p>
-            </div>
-        `;
-        return;
-    }
-    
-    sponsorsList.innerHTML = '';
-    
-    tournamentData.sponsors.forEach(sponsor => {
-        const sponsorCard = document.createElement('div');
-        sponsorCard.className = 'ad-card';
-        
-        sponsorCard.innerHTML = `
-            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--secondary-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; border: 2px solid var(--tournament-green);">
-                🏢
-            </div>
-            <h4 style="margin-bottom: 0.5rem;">${sponsor.name}</h4>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">${sponsor.description || ''}</p>
-            <p style="color: var(--tournament-blue); font-weight: 600; font-size: 0.9rem;">${sponsor.contact || ''}</p>
-        `;
-        
-        sponsorsList.appendChild(sponsorCard);
-    });
-}
-
-        function updateDashboardStats() {
-            const activeTournaments = tournamentData.events?.filter(e => e.status === 'active').length || 0;
-            const totalTeams = tournamentData.teams?.length || 0;
-            const totalMatches = tournamentData.matches?.length || 0;
-            const liveMatches = tournamentData.matches?.filter(m => m.status === 'live').length || 0;
-            
-            document.getElementById('activeTournaments').textContent = activeTournaments;
-            document.getElementById('totalTeams').textContent = totalTeams;
-            document.getElementById('totalMatches').textContent = totalMatches;
-            document.getElementById('liveMatches').textContent = liveMatches;
-        }
-
-        function loadFixtures() {
-            const fixturesList = document.getElementById('fixturesList');
-            if (!fixturesList) return;
-            
-            const fixtures = tournamentData.matches?.filter(m => m.status === 'scheduled') || [];
-            
-            if (fixtures.length === 0) {
-                fixturesList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-calendar-times"></i>
-                        <h3>No Fixtures Scheduled</h3>
-                        <p>Check back later for upcoming matches</p>
-                    </div>
-                `;
-                return;
+            try {
+                const response = await fetch(`${API_BASE}/scorers`);
+                if (response.ok) {
+                    tournamentData.scorers = await response.json();
+                    console.log('Scorers loaded:', tournamentData.scorers.length);
+                } else {
+                    tournamentData.scorers = [];
+                }
+                displayScorers();
+            } catch (error) {
+                console.error('Error loading scorers:', error);
+                tournamentData.scorers = [];
+                displayScorers();
             }
-            
-            fixturesList.innerHTML = '';
-            
-            fixtures.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
-            
-            fixtures.forEach(fixture => {
-                const homeTeam = tournamentData.teams?.find(t => t.id == fixture.team1_id);
-                const awayTeam = tournamentData.teams?.find(t => t.id == fixture.team2_id);
-                
-                if (!homeTeam || !awayTeam) return;
-                
-                const matchCard = document.createElement('div');
-                matchCard.className = 'match-card upcoming';
-                
-                const matchDate = new Date(fixture.match_date);
-                const dateStr = matchDate.toLocaleDateString();
-                const timeStr = matchDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                
-                matchCard.innerHTML = `
-                    <div class="teams">
-                        <div class="team">
-                            <div class="team-logo" style="border-color: ${homeTeam.color || '#00c853'};">${homeTeam.abbreviation || homeTeam.name.substring(0, 2)}</div>
-                            <span style="font-weight: 600;">${homeTeam.name}</span>
-                        </div>
-                        <div class="vs">VS</div>
-                        <div class="team">
-                            <div class="team-logo" style="border-color: ${awayTeam.color || '#2962ff'};">${awayTeam.abbreviation || awayTeam.name.substring(0, 2)}</div>
-                            <span style="font-weight: 600;">${awayTeam.name}</span>
-                        </div>
-                    </div>
-                    <div class="match-score">- : -</div>
-                    <div class="match-info">
-                        <div><i class="far fa-calendar"></i> ${dateStr}</div>
-                        <div><i class="far fa-clock"></i> ${timeStr}</div>
-                        <span class="match-status status-upcoming">Upcoming</span>
-                    </div>
-                `;
-                
-                fixturesList.appendChild(matchCard);
-            });
         }
 
-        function loadResults() {
-            const resultsList = document.getElementById('resultsList');
-            if (!resultsList) return;
-            
-            const results = tournamentData.matches?.filter(m => m.status === 'completed') || [];
-            
-            if (results.length === 0) {
-                resultsList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-futbol"></i>
-                        <h3>No Results Available</h3>
-                        <p>Match results will appear here</p>
-                    </div>
-                `;
-                return;
+        async function loadSponsors() {
+            try {
+                const response = await fetch(`${API_BASE}/sponsors`);
+                if (response.ok) {
+                    tournamentData.sponsors = await response.json();
+                    console.log('Sponsors loaded:', tournamentData.sponsors.length);
+                } else {
+                    tournamentData.sponsors = [];
+                }
+                displaySponsors();
+            } catch (error) {
+                console.error('Error loading sponsors:', error);
+                tournamentData.sponsors = [];
+                displaySponsors();
             }
-            
-            resultsList.innerHTML = '';
-            
-            results.sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
-            
-            results.forEach(result => {
-                const homeTeam = tournamentData.teams?.find(t => t.id == result.team1_id);
-                const awayTeam = tournamentData.teams?.find(t => t.id == result.team2_id);
-                
-                if (!homeTeam || !awayTeam) return;
-                
-                const matchCard = document.createElement('div');
-                matchCard.className = 'match-card finished';
-                
-                const matchDate = new Date(result.match_date);
-                const dateStr = matchDate.toLocaleDateString();
-                
-                matchCard.innerHTML = `
-                    <div class="teams">
-                        <div class="team">
-                            <div class="team-logo" style="border-color: ${homeTeam.color || '#00c853'};">${homeTeam.abbreviation || homeTeam.name.substring(0, 2)}</div>
-                            <span style="font-weight: 600;">${homeTeam.name}</span>
-                        </div>
-                        <div class="vs">VS</div>
-                        <div class="team">
-                            <div class="team-logo" style="border-color: ${awayTeam.color || '#2962ff'};">${awayTeam.abbreviation || awayTeam.name.substring(0, 2)}</div>
-                            <span style="font-weight: 600;">${awayTeam.name}</span>
-                        </div>
-                    </div>
-                    <div class="match-score">${result.team1_score || 0} : ${result.team2_score || 0}</div>
-                    <div class="match-info">
-                        <div><i class="far fa-calendar"></i> ${dateStr}</div>
-                        <span class="match-status status-finished">Finished</span>
-                    </div>
-                `;
-                
-                resultsList.appendChild(matchCard);
-            });
         }
 
-        function loadStandings() {
-            const standingsBody = document.getElementById('standingsBody');
-            if (!standingsBody) return;
-            
-            if (!tournamentData.teams || tournamentData.teams.length === 0) {
-                standingsBody.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="empty-state">
-                            <i class="fas fa-table"></i>
-                            <h3>No Standings Available</h3>
-                            <p>Add teams and matches to see standings</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            const standings = tournamentData.teams.map(team => {
-                const teamResults = tournamentData.matches?.filter(m => 
-                    m.status === 'completed' && (m.team1_id == team.id || m.team2_id == team.id)
-                ) || [];
-                
-                let played = 0, won = 0, drawn = 0, lost = 0;
-                let goalsFor = 0, goalsAgainst = 0;
-                
-                teamResults.forEach(result => {
-                    if (result.team1_id == team.id) {
-                        played++;
-                        goalsFor += result.team1_score || 0;
-                        goalsAgainst += result.team2_score || 0;
-                        if (result.team1_score > result.team2_score) won++;
-                        else if (result.team1_score < result.team2_score) lost++;
-                        else drawn++;
-                    } else if (result.team2_id == team.id) {
-                        played++;
-                        goalsFor += result.team2_score || 0;
-                        goalsAgainst += result.team1_score || 0;
-                        if (result.team2_score > result.team1_score) won++;
-                        else if (result.team2_score < result.team1_score) lost++;
-                        else drawn++;
-                    }
-                });
-                
-                return {
-                    teamName: team.name,
-                    teamAbbr: team.abbreviation || team.name.substring(0, 2),
-                    teamColor: team.color,
-                    played,
-                    won,
-                    drawn,
-                    lost,
-                    goalsFor,
-                    goalsAgainst,
-                    goalDifference: goalsFor - goalsAgainst,
-                    points: (won * 3) + drawn
-                };
-            });
-            
-            standings.sort((a, b) => {
-                if (b.points !== a.points) return b.points - a.points;
-                return b.goalDifference - a.goalDifference;
-            });
-            
-            standingsBody.innerHTML = '';
-            
-            standings.forEach((standing, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><span class="position">${index + 1}</span></td>
-                    <td>
-                        <div class="team-row">
-                            <div class="team-logo" style="width: 30px; height: 30px; border-color: ${standing.teamColor || '#00c853'};">${standing.teamAbbr}</div>
-                            ${standing.teamName}
-                        </div>
-                    </td>
-                    <td>${standing.played}</td>
-                    <td>${standing.won}</td>
-                    <td>${standing.drawn}</td>
-                    <td>${standing.lost}</td>
-                    <td>${standing.goalsFor}</td>
-                    <td>${standing.goalsAgainst}</td>
-                    <td>${standing.goalDifference > 0 ? '+' : ''}${standing.goalDifference}</td>
-                    <td><strong>${standing.points}</strong></td>
-                `;
-                standingsBody.appendChild(row);
-            });
-        }
-
-        function loadScorers() {
+        function displayScorers() {
             const scorersList = document.getElementById('scorersList');
             if (!scorersList) return;
-            
             if (!tournamentData.scorers || tournamentData.scorers.length === 0) {
-                scorersList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-star"></i>
-                        <h3>No Scorers Yet</h3>
-                        <p>Top scorers will appear here</p>
-                    </div>
-                `;
+                scorersList.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No Scorers Yet</h3><p>Top scorers will appear here</p></div>';
                 return;
             }
-            
             scorersList.innerHTML = '';
-            
-            const sortedScorers = [...tournamentData.scorers].sort((a, b) => b.goals - a.goals);
-            
-            sortedScorers.forEach((scorer, index) => {
-                const team = tournamentData.teams?.find(t => t.id == scorer.teamId);
-                
-                const scorerCard = document.createElement('div');
-                scorerCard.className = 'scorer-card';
-                
-                scorerCard.innerHTML = `
+            tournamentData.scorers.sort((a, b) => b.goals - a.goals).forEach((scorer, index) => {
+                const team = tournamentData.teams?.find(t => t.id == scorer.team_id);
+                const card = document.createElement('div');
+                card.className = 'scorer-card';
+                card.innerHTML = `
                     <div class="scorer-rank">${index + 1}</div>
                     <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
                         <div style="font-size: 2rem;">👤</div>
@@ -1359,109 +888,156 @@ function displaySponsors() {
                         </div>
                     </div>
                     <div style="display: flex; gap: 1.5rem;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.goals}</div>
-                            <div style="font-size: 0.8rem;">Goals</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.assists || 0}</div>
-                            <div style="font-size: 0.8rem;">Assists</div>
-                        </div>
+                        <div style="text-align: center;"><div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.goals}</div><div style="font-size: 0.8rem;">Goals</div></div>
+                        <div style="text-align: center;"><div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.assists || 0}</div><div style="font-size: 0.8rem;">Assists</div></div>
                     </div>
                 `;
-                
-                scorersList.appendChild(scorerCard);
+                scorersList.appendChild(card);
             });
         }
 
-        function loadSponsors() {
+        function displaySponsors() {
             const sponsorsList = document.getElementById('sponsorsList');
             if (!sponsorsList) return;
-            
             if (!tournamentData.sponsors || tournamentData.sponsors.length === 0) {
-                sponsorsList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-handshake"></i>
-                        <h3>No Sponsors Yet</h3>
-                        <p>Sponsors will appear here</p>
-                    </div>
-                `;
+                sponsorsList.innerHTML = '<div class="empty-state"><i class="fas fa-handshake"></i><h3>No Sponsors Yet</h3><p>Sponsors will appear here</p></div>';
                 return;
             }
-            
             sponsorsList.innerHTML = '';
-            
             tournamentData.sponsors.forEach(sponsor => {
-                const sponsorCard = document.createElement('div');
-                sponsorCard.className = 'ad-card';
-                
-                sponsorCard.innerHTML = `
-                    <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--secondary-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; border: 2px solid var(--tournament-green);">
-                        🏢
-                    </div>
+                const card = document.createElement('div');
+                card.className = 'ad-card';
+                card.innerHTML = `
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--secondary-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; border: 2px solid var(--tournament-green);">🏢</div>
                     <h4 style="margin-bottom: 0.5rem;">${sponsor.name}</h4>
                     <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">${sponsor.description || ''}</p>
                     <p style="color: var(--tournament-blue); font-weight: 600; font-size: 0.9rem;">${sponsor.contact || ''}</p>
                 `;
-                
-                sponsorsList.appendChild(sponsorCard);
+                sponsorsList.appendChild(card);
             });
-            
-            // Also update footer sponsors
             const footerSponsors = document.getElementById('footerSponsors');
             if (footerSponsors) {
                 footerSponsors.innerHTML = '';
                 tournamentData.sponsors.slice(0, 4).forEach(sponsor => {
-                    const sponsorLogo = document.createElement('div');
-                    sponsorLogo.style.cssText = `
-                        width: 80px;
-                        height: 40px;
-                        background-color: rgba(255, 255, 255, 0.1);
-                        border-radius: 4px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-weight: bold;
-                        font-size: 1.2rem;
-                    `;
-                    sponsorLogo.textContent = sponsor.name.substring(0, 2).toUpperCase();
-                    footerSponsors.appendChild(sponsorLogo);
+                    const logo = document.createElement('div');
+                    logo.style.cssText = 'width:80px;height:40px;background-color:rgba(255,255,255,0.1);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2rem;';
+                    logo.textContent = sponsor.name.substring(0, 2).toUpperCase();
+                    footerSponsors.appendChild(logo);
                 });
             }
         }
 
+        function updateDashboardStats() {
+            document.getElementById('activeTournaments').textContent = tournamentData.events?.filter(e => e.status === 'active').length || 0;
+            document.getElementById('totalTeams').textContent = tournamentData.teams?.length || 0;
+            document.getElementById('totalMatches').textContent = tournamentData.matches?.length || 0;
+            document.getElementById('liveMatches').textContent = tournamentData.matches?.filter(m => m.status === 'live').length || 0;
+        }
+
+        function loadFixtures() {
+            const fixturesList = document.getElementById('fixturesList');
+            if (!fixturesList) return;
+            const fixtures = tournamentData.matches?.filter(m => m.status === 'scheduled') || [];
+            if (fixtures.length === 0) {
+                fixturesList.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-times"></i><h3>No Fixtures Scheduled</h3><p>Check back later for upcoming matches</p></div>';
+                return;
+            }
+            fixturesList.innerHTML = '';
+            fixtures.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+            fixtures.forEach(fixture => {
+                const homeTeam = tournamentData.teams?.find(t => t.id == fixture.team1_id);
+                const awayTeam = tournamentData.teams?.find(t => t.id == fixture.team2_id);
+                if (!homeTeam || !awayTeam) return;
+                const matchDate = new Date(fixture.match_date);
+                const card = document.createElement('div');
+                card.className = 'match-card upcoming';
+                card.innerHTML = `
+                    <div class="teams"><div class="team"><div class="team-logo" style="border-color: ${homeTeam.color || '#00c853'};">${homeTeam.abbreviation || homeTeam.name.substring(0,2)}</div><span>${homeTeam.name}</span></div>
+                    <div class="vs">VS</div><div class="team"><div class="team-logo" style="border-color: ${awayTeam.color || '#2962ff'};">${awayTeam.abbreviation || awayTeam.name.substring(0,2)}</div><span>${awayTeam.name}</span></div></div>
+                    <div class="match-score">- : -</div>
+                    <div class="match-info"><div><i class="far fa-calendar"></i> ${matchDate.toLocaleDateString()}</div><div><i class="far fa-clock"></i> ${matchDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div><span class="match-status status-upcoming">Upcoming</span></div>
+                `;
+                fixturesList.appendChild(card);
+            });
+        }
+
+        function loadResults() {
+            const resultsList = document.getElementById('resultsList');
+            if (!resultsList) return;
+            const results = tournamentData.matches?.filter(m => m.status === 'completed') || [];
+            if (results.length === 0) {
+                resultsList.innerHTML = '<div class="empty-state"><i class="fas fa-futbol"></i><h3>No Results Available</h3><p>Match results will appear here</p></div>';
+                return;
+            }
+            resultsList.innerHTML = '';
+            results.sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
+            results.forEach(result => {
+                const homeTeam = tournamentData.teams?.find(t => t.id == result.team1_id);
+                const awayTeam = tournamentData.teams?.find(t => t.id == result.team2_id);
+                if (!homeTeam || !awayTeam) return;
+                const matchDate = new Date(result.match_date);
+                const card = document.createElement('div');
+                card.className = 'match-card finished';
+                card.innerHTML = `
+                    <div class="teams"><div class="team"><div class="team-logo" style="border-color: ${homeTeam.color || '#00c853'};">${homeTeam.abbreviation || homeTeam.name.substring(0,2)}</div><span>${homeTeam.name}</span></div>
+                    <div class="vs">VS</div><div class="team"><div class="team-logo" style="border-color: ${awayTeam.color || '#2962ff'};">${awayTeam.abbreviation || awayTeam.name.substring(0,2)}</div><span>${awayTeam.name}</span></div></div>
+                    <div class="match-score">${result.team1_score || 0} : ${result.team2_score || 0}</div>
+                    <div class="match-info"><div><i class="far fa-calendar"></i> ${matchDate.toLocaleDateString()}</div><span class="match-status status-finished">Finished</span></div>
+                `;
+                resultsList.appendChild(card);
+            });
+        }
+
+        function loadStandings() {
+            const standingsBody = document.getElementById('standingsBody');
+            if (!standingsBody) return;
+            if (!tournamentData.teams || tournamentData.teams.length === 0) {
+                standingsBody.innerHTML = '<tr><td colspan="10" class="empty-state"><i class="fas fa-table"></i><h3>No Standings Available</h3><p>Add teams and matches to see standings</p></td></tr>';
+                return;
+            }
+            const standings = tournamentData.teams.map(team => {
+                const teamResults = tournamentData.matches?.filter(m => m.status === 'completed' && (m.team1_id == team.id || m.team2_id == team.id)) || [];
+                let played = 0, won = 0, drawn = 0, lost = 0, goalsFor = 0, goalsAgainst = 0;
+                teamResults.forEach(result => {
+                    if (result.team1_id == team.id) {
+                        played++; goalsFor += result.team1_score || 0; goalsAgainst += result.team2_score || 0;
+                        if (result.team1_score > result.team2_score) won++;
+                        else if (result.team1_score < result.team2_score) lost++;
+                        else drawn++;
+                    } else if (result.team2_id == team.id) {
+                        played++; goalsFor += result.team2_score || 0; goalsAgainst += result.team1_score || 0;
+                        if (result.team2_score > result.team1_score) won++;
+                        else if (result.team2_score < result.team1_score) lost++;
+                        else drawn++;
+                    }
+                });
+                return { teamName: team.name, teamAbbr: team.abbreviation || team.name.substring(0,2), teamColor: team.color, played, won, drawn, lost, goalsFor, goalsAgainst, goalDifference: goalsFor - goalsAgainst, points: (won * 3) + drawn };
+            });
+            standings.sort((a, b) => (b.points - a.points) || (b.goalDifference - a.goalDifference));
+            standingsBody.innerHTML = '';
+            standings.forEach((standing, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="position">${index + 1}</span></td>
+                    <td><div class="team-row"><div class="team-logo" style="width:30px;height:30px;border-color:${standing.teamColor || '#00c853'};">${standing.teamAbbr}</div>${standing.teamName}</div></td>
+                    <td>${standing.played}</td><td>${standing.won}</td><td>${standing.drawn}</td><td>${standing.lost}</td>
+                    <td>${standing.goalsFor}</td><td>${standing.goalsAgainst}</td><td>${standing.goalDifference > 0 ? '+' : ''}${standing.goalDifference}</td>
+                    <td><strong>${standing.points}</strong></td>
+                `;
+                standingsBody.appendChild(row);
+            });
+        }
+
         function showAlert(message, type) {
-            const alert = document.createElement('div');
-            alert.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                color: white;
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                background-color: ${type === 'success' ? '#00c853' : '#ff3d00'};
-                max-width: 300px;
-            `;
-            
-            alert.textContent = message;
-            document.body.appendChild(alert);
-            
-            setTimeout(() => {
-                alert.style.opacity = '0';
-                alert.style.transition = 'opacity 0.3s ease';
-                setTimeout(() => alert.remove(), 300);
-            }, 3000);
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `position:fixed;top:20px;right:20px;padding:1rem 1.5rem;border-radius:8px;color:white;z-index:10000;animation:slideIn 0.3s ease;background-color:${type === 'success' ? '#00c853' : '#ff3d00'};max-width:300px;`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => { alertDiv.style.opacity = '0'; alertDiv.style.transition = 'opacity 0.3s'; setTimeout(() => alertDiv.remove(), 300); }, 3000);
         }
 
         const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
+        style.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
         document.head.appendChild(style);
     </script>
 </body>
