@@ -1260,13 +1260,28 @@
         }
 
         async function deleteEvent(id) {
-            if (!confirm('Delete this event and ALL its matches?')) return;
-            try {
-                const response = await fetch(`${API_BASE}/events/${id}`, { method: 'DELETE' });
-                if (response.ok) { await loadEvents(); await loadEventsSection(); showAlert('Event deleted!', 'success'); }
-                else showAlert('Error deleting event', 'error');
-            } catch (error) { showAlert('Error: ' + error.message, 'error'); }
+    if (!confirm('Delete this event and ALL its matches? This cannot be undone!')) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/events/${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            await loadEvents();
+            await loadEventsSection();
+            showAlert('Event and all matches deleted successfully!', 'success');
+        } else {
+            showAlert('Error: ' + (data.error || 'Failed to delete event'), 'error');
         }
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        showAlert('Error: ' + error.message, 'error');
+    }
+}
 
         // ============== SCORE FUNCTIONS ==============
         async function openScoreModal(matchId) {
