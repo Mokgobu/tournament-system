@@ -932,29 +932,24 @@
         }
 
         async function loadAllData() {
-            try {
-                console.log('Loading real data from API...');
-                
-                await Promise.all([
-                    loadTeams(),
-                    loadEvents(),
-                    loadMatches(),
-                    loadScorers(),
-                    loadSponsors()
-                ]);
-                
-                updateDashboardStats();
-                loadFixtures();
-                loadResults();
-                loadStandings();
-                
-                console.log('Real data loaded successfully');
-                
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showAlert('Error loading data', 'error');
-            }
-        }
+    try {
+        await loadTeams();
+        await loadEvents();
+        await loadMatches();
+        await loadScorers();
+        await loadSponsors();
+        
+        updateDashboardStats();
+        loadFixtures();
+        loadResults();
+        loadStandings();
+        // displayScorers and displaySponsors are called inside loadScorers/loadSponsors
+        
+        console.log('All data loaded successfully');
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
 
         async function loadTeams() {
             try {
@@ -1000,32 +995,122 @@
         }
 
         async function loadScorers() {
-            try {
-                const response = await fetch(`${API_BASE}/scorers`);
-                if (response.ok) {
-                    tournamentData.scorers = await response.json();
-                } else {
-                    tournamentData.scorers = [];
-                }
-            } catch (error) {
-                console.error('Error loading scorers:', error);
-                tournamentData.scorers = [];
-            }
+    try {
+        const response = await fetch(`${API_BASE}/scorers`);
+        if (response.ok) {
+            const data = await response.json();
+            tournamentData.scorers = data;
+            console.log('Scorers loaded:', data);
+            displayScorers(); // Call display function
+        } else {
+            console.warn('Failed to load scorers');
+            tournamentData.scorers = [];
         }
+    } catch (error) {
+        console.error('Error loading scorers:', error);
+        tournamentData.scorers = [];
+    }
+}
 
-        async function loadSponsors() {
-            try {
-                const response = await fetch(`${API_BASE}/sponsors`);
-                if (response.ok) {
-                    tournamentData.sponsors = await response.json();
-                } else {
-                    tournamentData.sponsors = [];
-                }
-            } catch (error) {
-                console.error('Error loading sponsors:', error);
-                tournamentData.sponsors = [];
-            }
+async function loadSponsors() {
+    try {
+        const response = await fetch(`${API_BASE}/sponsors`);
+        if (response.ok) {
+            const data = await response.json();
+            tournamentData.sponsors = data;
+            console.log('Sponsors loaded:', data);
+            displaySponsors(); // Call display function
+        } else {
+            console.warn('Failed to load sponsors');
+            tournamentData.sponsors = [];
         }
+    } catch (error) {
+        console.error('Error loading sponsors:', error);
+        tournamentData.sponsors = [];
+    }
+}
+
+function displayScorers() {
+    const scorersList = document.getElementById('scorersList');
+    if (!scorersList) return;
+    
+    if (!tournamentData.scorers || tournamentData.scorers.length === 0) {
+        scorersList.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-star"></i>
+                <h3>No Scorers Yet</h3>
+                <p>Top scorers will appear here</p>
+            </div>
+        `;
+        return;
+    }
+    
+    scorersList.innerHTML = '';
+    
+    tournamentData.scorers.sort((a, b) => b.goals - a.goals).forEach((scorer, index) => {
+        const team = tournamentData.teams?.find(t => t.id == scorer.team_id);
+        
+        const scorerCard = document.createElement('div');
+        scorerCard.className = 'scorer-card';
+        
+        scorerCard.innerHTML = `
+            <div class="scorer-rank">${index + 1}</div>
+            <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                <div style="font-size: 2rem;">👤</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 1.1rem;">${scorer.player}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">${team?.name || 'Unknown'}</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1.5rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.goals}</div>
+                    <div style="font-size: 0.8rem;">Goals</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.assists || 0}</div>
+                    <div style="font-size: 0.8rem;">Assists</div>
+                </div>
+            </div>
+        `;
+        
+        scorersList.appendChild(scorerCard);
+    });
+}
+
+function displaySponsors() {
+    const sponsorsList = document.getElementById('sponsorsList');
+    if (!sponsorsList) return;
+    
+    if (!tournamentData.sponsors || tournamentData.sponsors.length === 0) {
+        sponsorsList.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-handshake"></i>
+                <h3>No Sponsors Yet</h3>
+                <p>Sponsors will appear here</p>
+            </div>
+        `;
+        return;
+    }
+    
+    sponsorsList.innerHTML = '';
+    
+    tournamentData.sponsors.forEach(sponsor => {
+        const sponsorCard = document.createElement('div');
+        sponsorCard.className = 'ad-card';
+        
+        sponsorCard.innerHTML = `
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--secondary-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; border: 2px solid var(--tournament-green);">
+                🏢
+            </div>
+            <h4 style="margin-bottom: 0.5rem;">${sponsor.name}</h4>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">${sponsor.description || ''}</p>
+            <p style="color: var(--tournament-blue); font-weight: 600; font-size: 0.9rem;">${sponsor.contact || ''}</p>
+        `;
+        
+        sponsorsList.appendChild(sponsorCard);
+    });
+}
 
         function updateDashboardStats() {
             const activeTournaments = tournamentData.events?.filter(e => e.status === 'active').length || 0;

@@ -1259,7 +1259,7 @@
             document.getElementById('eventModal').style.display = 'block';
         }
 
-        async function deleteEvent(id) {
+  async function deleteEvent(id) {
     if (!confirm('Delete this event and ALL its matches? This cannot be undone!')) return;
     
     try {
@@ -1268,14 +1268,13 @@
             headers: { 'Content-Type': 'application/json' }
         });
         
-        const data = await response.json();
-        
         if (response.ok) {
             await loadEvents();
             await loadEventsSection();
             showAlert('Event and all matches deleted successfully!', 'success');
         } else {
-            showAlert('Error: ' + (data.error || 'Failed to delete event'), 'error');
+            const error = await response.json();
+            showAlert('Error: ' + (error.error || 'Failed to delete event'), 'error');
         }
     } catch (error) {
         console.error('Error deleting event:', error);
