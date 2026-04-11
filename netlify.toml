@@ -7,8 +7,15 @@
   publish = "src"
   autoLaunch = true
 
-# Only this one redirect - remove any others
+# Redirect all /api/* requests to functions
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+# Handle SPA routing - this must be LAST
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
