@@ -867,35 +867,39 @@
         }
 
         function displayScorers() {
-            const scorersList = document.getElementById('scorersList');
-            if (!scorersList) return;
-            if (!tournamentData.scorers || tournamentData.scorers.length === 0) {
-                scorersList.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No Scorers Yet</h3><p>Top scorers will appear here</p></div>';
-                return;
-            }
-            scorersList.innerHTML = '';
-            tournamentData.scorers.sort((a, b) => b.goals - a.goals).forEach((scorer, index) => {
-                const team = tournamentData.teams?.find(t => t.id == scorer.team_id);
-                const card = document.createElement('div');
-                card.className = 'scorer-card';
-                card.innerHTML = `
-                    <div class="scorer-rank">${index + 1}</div>
-                    <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
-                        <div style="font-size: 2rem;">👤</div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 600; font-size: 1.1rem;">${scorer.player}</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">${team?.name || 'Unknown'}</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 1.5rem;">
-                        <div style="text-align: center;"><div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.goals}</div><div style="font-size: 0.8rem;">Goals</div></div>
-                        <div style="text-align: center;"><div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.assists || 0}</div><div style="font-size: 0.8rem;">Assists</div></div>
-                    </div>
-                `;
-                scorersList.appendChild(card);
-            });
-        }
-
+    const scorersList = document.getElementById('scorersList');
+    if (!scorersList) return;
+    
+    if (!tournamentData.scorers || tournamentData.scorers.length === 0) {
+        scorersList.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No Scorers Yet</h3><p>Top scorers will appear here</p></div>';
+        return;
+    }
+    
+    scorersList.innerHTML = '';
+    
+    tournamentData.scorers.sort((a, b) => b.goals - a.goals).forEach((scorer, index) => {
+        // Use team_id (from API) not teamId
+        const team = tournamentData.teams?.find(t => t.id == scorer.team_id);
+        
+        const card = document.createElement('div');
+        card.className = 'scorer-card';
+        card.innerHTML = `
+            <div class="scorer-rank">${index + 1}</div>
+            <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                <div style="font-size: 2rem;">👤</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 1.1rem;">${scorer.player}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">${team?.name || 'Unknown'}</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1.5rem;">
+                <div style="text-align: center;"><div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.goals}</div><div style="font-size: 0.8rem;">Goals</div></div>
+                <div style="text-align: center;"><div style="font-size: 1.5rem; font-weight: bold; color: var(--tournament-green);">${scorer.assists || 0}</div><div style="font-size: 0.8rem;">Assists</div></div>
+            </div>
+        `;
+        scorersList.appendChild(card);
+    });
+}
         function displaySponsors() {
             const sponsorsList = document.getElementById('sponsorsList');
             if (!sponsorsList) return;

@@ -30,12 +30,12 @@ exports.handler = async function(event, context) {
       return { statusCode: 200, headers, body: JSON.stringify(events) };
     }
 
-    // POST create event
+    // POST create event - WITHOUT venue and start_time
     if (event.httpMethod === 'POST') {
       const body = JSON.parse(event.body);
-      const { name, type, teams, venue, start_time } = body;
+      const { name, type, teams } = body;
       
-      console.log('Creating event:', { name, type, teams, venue, start_time });
+      console.log('Creating event:', { name, type, teams });
       
       if (!name || !type || !teams || teams.length < 2) {
         return {
@@ -45,10 +45,10 @@ exports.handler = async function(event, context) {
         };
       }
       
-      // Insert event
+      // Insert event without venue/start_time
       const [newEvent] = await sql`
-        INSERT INTO events (name, type, status, venue, start_time)
-        VALUES (${name}, ${type}, 'active', ${venue || null}, ${start_time || null})
+        INSERT INTO events (name, type, status)
+        VALUES (${name}, ${type}, 'active')
         RETURNING *
       `;
       
