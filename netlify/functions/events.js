@@ -30,7 +30,7 @@ exports.handler = async function(event, context) {
       return { statusCode: 200, headers, body: JSON.stringify(events) };
     }
 
-    // POST create event - WITHOUT venue and start_time
+    // POST create event
     if (event.httpMethod === 'POST') {
       const body = JSON.parse(event.body);
       const { name, type, teams } = body;
@@ -45,7 +45,6 @@ exports.handler = async function(event, context) {
         };
       }
       
-      // Insert event without venue/start_time
       const [newEvent] = await sql`
         INSERT INTO events (name, type, status)
         VALUES (${name}, ${type}, 'active')
@@ -54,7 +53,6 @@ exports.handler = async function(event, context) {
       
       console.log('Event created:', newEvent);
       
-      // Create standings entries
       for (const teamId of teams) {
         await sql`
           INSERT INTO standings (event_id, team_id, played, won, drawn, lost, goals_for, goals_against, points)
@@ -62,7 +60,6 @@ exports.handler = async function(event, context) {
         `;
       }
       
-      // Generate league matches
       if (type === 'league') {
         for (let i = 0; i < teams.length; i++) {
           for (let j = i + 1; j < teams.length; j++) {
@@ -77,6 +74,46 @@ exports.handler = async function(event, context) {
       }
       
       return { statusCode: 201, headers, body: JSON.stringify(newEvent) };
+    }
+
+    // ========== DELETE event ==========
+    if (event.httpMethod === 'DELETE') {
+      const pathParts = event.path.split('/');
+      const id = pathParts[pathParts.length - 1];
+      
+      console.log('DELETE request for event ID:', id);
+      
+      if (!id || isNaN(parseInt(id))) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Valid event ID is required' })
+        };
+      }
+      
+      const [existingEvent] = await sql`SELECT * FROM events WHERE id = ${id}`;
+      if (!existingEvent) {
+        return {
+          statusCode: 404,
+          headers,
+          body: JSON.stringify({ error: 'Event not found' })
+        };
+      }
+      
+      await sql`DELETE FROM matches WHERE event_id = ${id}`;
+      await sql`DELETE FROM standings WHERE event_id = ${id}`;
+      await sql`DELETE FROM events WHERE id = ${id}`;
+      
+      console.log(`Event ${id} deleted successfully`);
+      
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ 
+          success: true, 
+          message: 'Event and all associated matches deleted successfully' 
+        })
+      };
     }
 
     return { statusCode: 404, headers, body: JSON.stringify({ error: 'Not found' }) };
